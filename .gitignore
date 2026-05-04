@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+dist/
+build/
+.next/
+
+# env files
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+
+# misc
+.DS_Store
+*.pem
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# Workspace specific ignores are handled in subdirectories
+# but we keep these as defaults
+frontend/node_modules/
+frontend/.next/
+backend/node_modules/
+backend/dist/
+backend/uploads/
