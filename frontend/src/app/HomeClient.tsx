@@ -25,7 +25,7 @@ import {
   ThumbsUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, type Category, type Product, type Brand, type BlogPost, type Testimonial } from '@/app/lib/api';
+import { api, type Category, type Product, type Brand, type BlogPost, type Testimonial, type Faq } from '@/app/lib/api';
 import ProductCard from '@/app/components/ProductCard';
 import { ProductSkeleton } from '@/app/components/Skeleton';
 import ProductRating from '@/app/components/ProductRating';
@@ -36,6 +36,7 @@ interface HomeClientProps {
   initialNewProducts: Product[];
   initialBrands: Brand[];
   initialBlogs: BlogPost[];
+  initialFaqs: Faq[];
   initialTestimonials: Testimonial[];
 }
 
@@ -45,6 +46,7 @@ export default function HomeClient({
   initialNewProducts,
   initialBrands,
   initialBlogs,
+  initialFaqs,
   initialTestimonials
 }: HomeClientProps) {
   const [categories] = useState<Category[]>(initialCategories);
@@ -53,23 +55,29 @@ export default function HomeClient({
   const [isLoadingFeatured, setIsLoadingFeatured] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
 
-  const heroBackground = "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=2000";
-  const newsletterImage = "https://images.unsplash.com/photo-1553095066-5014bd030620?auto=format&fit=crop&q=80&w=1000";
+  const heroBackground = "/tria-crystal/hero.png";
+  const newsletterImage = "/tria-crystal/banner1.png";
 
-  const testimonials = [
+  const testimonialsList = initialTestimonials.length > 0 ? initialTestimonials : [
     {
+        id: 0,
         name: "Sofia El Amrani",
         role: "Cliente vérifiée",
         content: "La qualité des lampes est exceptionnelle, le design est magnifique et la livraison rapide. Je recommande Tria Lampe !",
-        rating: 5,
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
+        initial: "SE",
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     },
     {
+        id: 1,
         name: "Marc Dupont",
         role: "Client vérifié",
         content: "Service client au top et produits magnifiques. J'ai acheté trois lampes pour mon salon et le résultat est superbe.",
-        rating: 5,
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150"
+        initial: "MD",
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     }
   ];
 
@@ -90,11 +98,17 @@ export default function HomeClient({
     <div className="flex-1 flex flex-col bg-white overflow-x-hidden font-outfit">
       
       {/* HERO SECTION */}
-      <section 
-        className="relative h-[700px] overflow-hidden bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBackground})` }}
-      >
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px] z-0" />
+      <section className="relative h-[700px] lg:h-[800px] overflow-hidden">
+        {/* Optimized Hero Image */}
+        <Image 
+          src={heroBackground} 
+          alt="Lustre Cristal Luxe" 
+          fill 
+          priority 
+          quality={100}
+          className="object-cover object-center scale-105"
+        />
+        <div className="absolute inset-0 bg-black/40 z-0" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent z-0" />
 
         <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-12 h-full flex flex-col justify-center relative z-10 pt-20">
@@ -106,6 +120,62 @@ export default function HomeClient({
                 <p className="text-xl text-white/80 max-w-lg leading-relaxed font-medium mb-12">Découvrez notre collection de lampes design pour sublimer chaque espace de votre maison.</p>
                 <Link href="/products" className="inline-flex px-12 py-5 bg-[#C18E2E] text-white rounded-md font-black uppercase tracking-widest text-[11px] hover:bg-white hover:text-black transition-all">Découvrir la collection</Link>
               </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* TRUST BADGES SECTION */}
+      <section className="relative z-20 -mt-12 lg:-mt-16 px-6 sm:px-12">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-50 p-8 lg:p-12 flex flex-wrap justify-between gap-12 lg:gap-8">
+            <div className="flex items-center gap-5 group">
+              <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
+                <Truck size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Livraison gratuite</h4>
+                <p className="text-[11px] font-bold text-slate-400">À partir de 1000 MAD</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5 group">
+              <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
+                <ShieldCheck size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Paiement sécurisé</h4>
+                <p className="text-[11px] font-bold text-slate-400">100% sécurisé</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5 group">
+              <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
+                <Box size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Retours faciles</h4>
+                <p className="text-[11px] font-bold text-slate-400">30 jours pour changer d'avis</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5 group">
+              <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
+                <Award size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Garantie 2 ans</h4>
+                <p className="text-[11px] font-bold text-slate-400">Sur tous nos produits</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-5 group">
+              <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
+                <Headset size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Service client</h4>
+                <p className="text-[11px] font-bold text-slate-400">Disponible 7j/7</p>
+              </div>
             </div>
           </div>
         </div>
@@ -122,8 +192,8 @@ export default function HomeClient({
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {categories.slice(0, 6).map((cat, i) => (
               <Link key={i} href={`/products?categoryId=${cat.id}`} className={`group flex flex-col items-center bg-white rounded-2xl border ${i === 0 ? 'border-[#B8860B] shadow-lg shadow-[#B8860B]/10' : 'border-slate-100'} overflow-hidden transition-all hover:shadow-xl`}>
-                <div className="relative aspect-square w-full bg-slate-50 overflow-hidden">
-                  <Image src={cat.imageUrl || "/placeholder.png"} alt={cat.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                <div className="relative aspect-square w-full bg-white overflow-hidden">
+                  <Image src={cat.imageUrl || "/placeholder.png"} alt={cat.name} fill quality={100} className="object-cover transition-transform duration-500 group-hover:scale-110" />
                 </div>
                 <div className="p-6 text-center">
                     <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">{cat.name}</h3>
@@ -156,7 +226,7 @@ export default function HomeClient({
             <Link href="/products" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2 ml-auto">Voir toutes les lampes <ChevronRight size={14} /></Link>
           </div>
 
-          <div className="relative group">
+          <div className="relative group/slider">
             <div 
               id="featured-slider"
               className="flex overflow-x-auto gap-6 scroll-smooth no-scrollbar pb-8 px-2"
@@ -183,7 +253,7 @@ export default function HomeClient({
                 const el = document.getElementById('featured-slider');
                 if (el) el.scrollLeft -= el.offsetWidth;
               }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover:opacity-100"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/slider:opacity-100"
             >
               <ChevronLeft size={24} />
             </button>
@@ -192,7 +262,7 @@ export default function HomeClient({
                 const el = document.getElementById('featured-slider');
                 if (el) el.scrollLeft += el.offsetWidth;
               }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/slider:opacity-100"
             >
               <ChevronRight size={24} />
             </button>
@@ -205,7 +275,7 @@ export default function HomeClient({
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative h-[320px] rounded-[30px] overflow-hidden group">
-              <Image src="https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=1200" alt="Banner 1" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/tria-crystal/banner1.png" alt="Lustre Cristal Collection Premium" fill quality={100} className="object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-black/40 flex flex-col justify-center p-12 text-white">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-[#B8860B]">Collection Premium</span>
                 <h3 className="text-3xl font-black mb-8 leading-tight">Luminaires Design<br />Haut de Gamme</h3>
@@ -215,12 +285,12 @@ export default function HomeClient({
               </div>
             </div>
             <div className="relative h-[320px] rounded-[30px] overflow-hidden group">
-              <Image src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=1200" alt="Banner 2" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px] flex flex-col justify-center p-12 text-slate-900">
+              <Image src="/tria-crystal/blog-dining.png" alt="Lustre Cristal Ambiance" fill quality={100} className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/40 flex flex-col justify-center p-12 text-white">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-[#B8860B]">Ambiance Parfaite</span>
                 <h3 className="text-3xl font-black mb-8 leading-tight">Créez l'atmosphère<br />idéale chez vous</h3>
-                <Link href="/products" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border-b-2 border-slate-900 pb-1 w-fit hover:text-[#B8860B] hover:border-[#B8860B] transition-all">
-                  Voir les inspirations <ChevronRight size={14} />
+                <Link href="/products" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border-b-2 border-white pb-1 w-fit hover:text-[#B8860B] hover:border-[#B8860B] transition-all">
+                    Voir les inspirations <ArrowRight size={14} />
                 </Link>
               </div>
             </div>
@@ -236,7 +306,7 @@ export default function HomeClient({
             <Link href="/products?sort=createdAt" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2">Voir toutes les nouveautés <ChevronRight size={14} /></Link>
           </div>
 
-          <div className="relative group">
+          <div className="relative group/new">
             <div 
               id="new-products-slider"
               className="flex overflow-x-auto gap-6 scroll-smooth no-scrollbar pb-8 px-2"
@@ -255,7 +325,7 @@ export default function HomeClient({
                 const el = document.getElementById('new-products-slider');
                 if (el) el.scrollLeft -= el.offsetWidth;
               }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover:opacity-100"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/new:opacity-100"
             >
               <ChevronLeft size={24} />
             </button>
@@ -264,7 +334,7 @@ export default function HomeClient({
                 const el = document.getElementById('new-products-slider');
                 if (el) el.scrollLeft += el.offsetWidth;
               }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/new:opacity-100"
             >
               <ChevronRight size={24} />
             </button>
@@ -292,35 +362,35 @@ export default function HomeClient({
                     </div>
                     
                     <p className="text-lg text-slate-600 italic leading-relaxed mb-10 font-medium">
-                        "{testimonials[testimonialIndex].content}"
+                        "{testimonialsList[testimonialIndex].content}"
                     </p>
 
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#B8860B]">
-                            <Image src={testimonials[testimonialIndex].avatar} alt={testimonials[testimonialIndex].name} width={48} height={48} />
+                    <div className="flex items-center gap-6 mt-12">
+                        <div className="size-16 rounded-2xl bg-[#B8860B]/10 border border-[#B8860B]/20 flex items-center justify-center text-[#B8860B] font-black text-xl italic uppercase">
+                            {testimonialsList[testimonialIndex].initial || testimonialsList[testimonialIndex].name.substring(0, 2)}
                         </div>
                         <div>
-                            <h4 className="text-base font-bold text-slate-900">{testimonials[testimonialIndex].name}</h4>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{testimonials[testimonialIndex].role}</p>
+                            <h4 className="text-xl font-black text-slate-900 italic uppercase">{testimonialsList[testimonialIndex].name}</h4>
+                            <p className="text-xs font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">{testimonialsList[testimonialIndex].role}</p>
                         </div>
                     </div>
 
                     {/* Pagination Dots */}
-                    <div className="flex justify-center gap-2 mt-10">
-                        {testimonials.map((_, i) => (
+                    <div className="flex gap-3 mt-10 ml-4">
+                        {testimonialsList.map((_, i) => (
                             <button 
                                 key={i} 
                                 onClick={() => setTestimonialIndex(i)}
-                                className={`h-1.5 rounded-full transition-all ${i === testimonialIndex ? 'w-8 bg-[#B8860B]' : 'w-2 bg-slate-200 hover:bg-slate-300'}`}
+                                className={`h-1.5 transition-all duration-500 rounded-full ${i === testimonialIndex ? 'w-10 bg-[#B8860B]' : 'w-3 bg-slate-200 hover:bg-slate-300'}`}
                             />
                         ))}
                     </div>
 
                     {/* Navigation Buttons */}
-                    <button onClick={() => setTestimonialIndex(prev => (prev - 1 + testimonials.length) % testimonials.length)} className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] transition-all">
+                    <button onClick={() => setTestimonialIndex(prev => (prev - 1 + testimonialsList.length) % testimonialsList.length)} className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] transition-all">
                         <ChevronLeft size={20} />
                     </button>
-                    <button onClick={() => setTestimonialIndex(prev => (prev + 1) % testimonials.length)} className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] transition-all">
+                    <button onClick={() => setTestimonialIndex(prev => (prev + 1) % testimonialsList.length)} className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] transition-all">
                         <ChevronRight size={20} />
                     </button>
                 </div>
@@ -369,9 +439,10 @@ export default function HomeClient({
             {/* Right Image */}
             <div className="hidden md:block w-full md:w-[45%] relative">
                 <Image 
-                  src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=1000" 
+                  src="/tria-crystal/hero.png" 
                   alt="Newsletter Inspiration" 
                   fill 
+                  quality={100}
                   className="object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#111] via-transparent to-transparent" />

@@ -7,27 +7,32 @@ export default function ConfidentialitePage() {
     return (
         <div className="flex-1 bg-white min-h-screen">
             {/* Header */}
-            <div className="bg-slate-50 border-b border-slate-100 py-32">
-                <div className="max-w-[1400px] mx-auto px-6 text-center">
+            <div className="relative py-40 bg-slate-900 overflow-hidden">
+                <div className="absolute inset-0 bg-cover bg-center opacity-40 scale-105" style={{ backgroundImage: "url('/tria-crystal/hero.png')" }}></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                <div className="relative max-w-[1400px] mx-auto px-6 text-left">
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="size-20 rounded-[30px] bg-white shadow-2xl flex items-center justify-center text-[#B8860B] mx-auto mb-10"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-flex items-center gap-3 px-6 py-2 bg-white/10 backdrop-blur-xl border border-white/10 rounded-full text-[#B8860B] mb-10"
                     >
-                        <ShieldCheck size={32} />
+                        <ShieldCheck size={14} />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Secret Professionnel Tria</span>
                     </motion.div>
                     <motion.h1 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-5xl md:text-7xl font-black text-slate-900 mb-8 uppercase tracking-tighter leading-none"
+                        transition={{ delay: 0.1 }}
+                        className="text-6xl md:text-8xl font-black text-white mb-8 uppercase tracking-tighter leading-none"
                     >
-                        Secret <span className="text-[#B8860B]">Professionnel</span>
+                        Secret <br />
+                        <span className="text-[#B8860B]">Professionnel</span>
                     </motion.h1>
                     <motion.p 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed"
+                        transition={{ delay: 0.2 }}
+                        className="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed"
                     >
                         La discrétion est l'essence du luxe. Tria Lampe s'engage à protéger l'intégrité de vos données avec la plus haute exigence.
                     </motion.p>

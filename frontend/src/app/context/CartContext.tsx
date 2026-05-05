@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useNotification } from './NotificationContext';
 
 export interface CartItem {
     productId: number;
@@ -38,6 +39,7 @@ function loadCart(): CartItem[] {
 
 export function CartProvider({ children }: { children: ReactNode }) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const { showToast } = useNotification();
 
     // Hydrate from localStorage after mount
     useEffect(() => {
@@ -63,7 +65,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
             return [...prev, { ...item, price: Number(item.price), quantity }];
         });
-    }, []);
+        showToast(`${item.name} ajouté au panier`, 'success');
+    }, [showToast]);
 
     const removeFromCart = useCallback((productId: number) => {
         setCartItems((prev) => prev.filter((i) => i.productId !== productId));

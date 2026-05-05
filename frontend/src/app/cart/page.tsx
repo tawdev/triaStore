@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, MessageCircle, X, MapPin, User, Phone, CheckCircle2, FileText, Sparkles, ShieldCheck, Box } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import { useNotification } from '@/app/context/NotificationContext';
@@ -248,7 +250,7 @@ export default function ShoppingCartPage() {
                                         <div className="text-right">
                                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1">Valorisation</p>
                                             <p className="text-2xl font-black text-slate-900 tracking-tighter">
-                                                {(Number(item.price) * item.quantity).toLocaleString()} <span className="text-sm">MAD</span>
+                                                {new Intl.NumberFormat('fr-MA').format(Number(item.price) * item.quantity)} <span className="text-sm">MAD</span>
                                             </p>
                                         </div>
                                     </div>
@@ -283,7 +285,7 @@ export default function ShoppingCartPage() {
                             <div className="space-y-6 mb-12 relative z-10">
                                 <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                                     <span>Valeur des pièces</span>
-                                    <span className="text-white">{Number(totalPrice).toLocaleString()} MAD</span>
+                                    <span className="text-white">{new Intl.NumberFormat('fr-MA').format(Number(totalPrice))} MAD</span>
                                 </div>
                                 <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                                     <span>Logistique Spécialisée</span>
@@ -297,7 +299,7 @@ export default function ShoppingCartPage() {
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B] mb-2">Total Estimé</p>
                                             <p className="text-5xl font-black tracking-tighter">
-                                                {(Number(totalPrice) + (Number(totalPrice) >= 2000 ? 0 : 250)).toLocaleString()} <span className="text-xl">MAD</span>
+                                                {new Intl.NumberFormat('fr-MA').format(Number(totalPrice) + (Number(totalPrice) >= 2000 ? 0 : 250))} <span className="text-xl">MAD</span>
                                             </p>
                                         </div>
                                     </div>

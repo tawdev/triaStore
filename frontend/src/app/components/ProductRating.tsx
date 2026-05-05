@@ -23,31 +23,47 @@ export default function ProductRating({
         let isMounted = true;
 
         const loadStats = async () => {
+            if (!productId) return;
+            
             try {
                 // Quick initial load from localStorage
                 const saved = localStorage.getItem(`reviews_${productId}`);
                 if (saved) {
-                    const reviews = JSON.parse(saved);
-                    if (Array.isArray(reviews) && reviews.length > 0) {
-                        const avg = reviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0) / reviews.length;
-                        if (isMounted) setStats({ avg, count: reviews.length });
+                    try {
+                        const reviews = JSON.parse(saved);
+                        if (Array.isArray(reviews) && reviews.length > 0) {
+                            const avg = reviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0) / reviews.length;
+                            if (isMounted) setStats({ avg, count: reviews.length });
+                        }
+                    } catch (e) {
+                        // Ignore parse errors
                     }
                 }
 
-                // Fetch real data from API
-                const realReviews = await api.getProductReviews(productId);
-                if (isMounted) {
-                    if (Array.isArray(realReviews) && realReviews.length > 0) {
-                        const avg = realReviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0) / realReviews.length;
+                // Fetch real data from API with a small delay to avoid overwhelming the server on page load
+                // only if we haven't already fetched it in this session (optional optimization)
+                
+                const realReviews = await api.getProductReviews(productId).catch(err => {
+                    // Fail silently or log a warning instead of a full error for "Failed to fetch"
+                    if (err.message === 'Failed to fetch') {
+                        console.warn(`Could not reach API for product ${productId} reviews. Using cached data if available.`);
+                        return null;
+                    }
+                    throw err;
+                });
+
+                if (isMounted && realReviews) {
+                    if (Array.isArray(realReviews)) {
+                        const avg = realReviews.length > 0 
+                            ? realReviews.reduce((acc: number, r: any) => acc + (r.rating || 0), 0) / realReviews.length
+                            : 0;
                         setStats({ avg, count: realReviews.length });
                         // Update local cache
                         localStorage.setItem(`reviews_${productId}`, JSON.stringify(realReviews));
-                    } else {
-                        setStats({ avg: 0, count: 0 });
                     }
                 }
             } catch (err) {
-                console.error(`Error loading review stats for product ${productId}:`, err);
+                // Silently handle other errors to avoid crashing the UI
             }
         };
 

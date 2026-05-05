@@ -15,15 +15,10 @@ export default function PublicShell({ children }: { children: React.ReactNode })
         <div className="flex flex-col min-h-screen bg-white">
             {!shouldHideShell && (
                 <Suspense fallback={<div className="h-20 bg-white animate-pulse" />}>
-                    <Header />
-                </Suspense>
-            )}
-            {!shouldHideShell && (
-                <Suspense fallback={<div className="h-10 bg-white animate-pulse" />}>
                     <Navbar />
                 </Suspense>
             )}
-            <main className="flex-grow">
+            <main className={`flex-grow ${!isHome && !shouldHideShell ? 'pt-32' : ''}`}>
                 {children}
             </main>
             {!shouldHideShell && (

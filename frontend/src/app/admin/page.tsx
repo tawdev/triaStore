@@ -184,7 +184,7 @@ export default function AdminDashboardPage() {
                             className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                           >
                             <div className="size-9 rounded-lg bg-slate-50 overflow-hidden relative border border-slate-100">
-                              {product.imageUrl ? (
+                              {product.imageUrl?.trim() ? (
                                 <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-1" />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-slate-300">
@@ -240,7 +240,7 @@ export default function AdminDashboardPage() {
                   <Skeleton className="h-8 w-24 mt-2" />
                 ) : (
                   <p className="text-slate-900 text-2xl font-black mt-1">
-                    {stat.value !== null ? stat.value.toLocaleString() : '—'}
+                    {stat.value !== null && stat.value !== undefined ? stat.value.toLocaleString() : '—'}
                   </p>
                 )}
               </div>

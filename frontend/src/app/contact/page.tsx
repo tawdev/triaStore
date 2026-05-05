@@ -70,7 +70,7 @@ export default function ContactPage() {
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <img 
-                        src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+                        src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=2069&auto=format&fit=crop" 
                         alt="Maison Tria"
                         className="w-full h-full object-cover opacity-60 scale-105"
                     />

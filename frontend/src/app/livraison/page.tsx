@@ -13,7 +13,7 @@ export default function LivraisonPage() {
         <div className="flex-1 bg-white">
             {/* Hero Section */}
             <div className="relative py-40 bg-slate-900 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566208532454-e53b4776e001?q=80&w=2048&auto=format&fit=crop')] bg-cover bg-center opacity-40 scale-105"></div>
+                <div className="absolute inset-0 bg-cover bg-center opacity-50 scale-105" style={{ backgroundImage: "url('/tria-crystal/hero.png')" }}></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
                 <div className="relative max-w-[1400px] mx-auto px-6 text-left">
                     <motion.div 
@@ -81,8 +81,8 @@ export default function LivraisonPage() {
                     <div className="relative">
                         <div className="aspect-square rounded-[60px] overflow-hidden shadow-2xl">
                             <img 
-                                src="https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=800" 
-                                alt="Tria Delivery" 
+                                src="/tria-crystal/craftsmanship.png" 
+                                alt="Tria Cristal — Conditionnement d'Exception" 
                                 className="w-full h-full object-cover"
                             />
                         </div>

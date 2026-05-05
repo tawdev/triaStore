@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, Review, api } from '@/app/lib/api';
@@ -50,6 +50,16 @@ export default function ProductClient({ initialProduct, initialReviews, settings
         phone: '',
         address: ''
     });
+    const [hasReviewed, setHasReviewed] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const reviewed = JSON.parse(localStorage.getItem('reviewed_products') || '[]');
+            if (reviewed.includes(product.id)) {
+                setHasReviewed(true);
+            }
+        }
+    }, [product.id]);
 
     const handleCheckout = async () => {
         if (!product) return;
@@ -133,6 +143,13 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                 createdAt: new Date().toISOString() as any,
             };
             setReviews((prev) => [newReview, ...prev]);
+
+            // Save to localStorage to prevent duplicate reviews
+            if (typeof window !== 'undefined') {
+                const reviewed = JSON.parse(localStorage.getItem('reviewed_products') || '[]');
+                localStorage.setItem('reviewed_products', JSON.stringify([...reviewed, product.id]));
+                setHasReviewed(true);
+            }
 
             showToast('Votre avis a été publié avec succès !', 'success');
 
@@ -227,7 +244,7 @@ export default function ProductClient({ initialProduct, initialReviews, settings
 
                     {/* ── LEFT: Product Image & Gallery ── */}
                     <div className="w-full lg:w-[600px] flex-shrink-0">
-                        <div className="relative aspect-square rounded-[40px] overflow-hidden bg-slate-50 group">
+                        <div className="relative aspect-square rounded-[40px] overflow-hidden bg-white group">
                             {activeImage ? (
                                 <ProductImageZoom src={activeImage} alt={product.name} />
                             ) : (
@@ -286,11 +303,11 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                             <div className="flex items-center gap-6">
                                 <div className="flex items-baseline gap-4">
                                     <span className="text-4xl font-black text-[#B8860B] tracking-tighter">
-                                        {Number(product.price).toLocaleString()} <span className="text-sm uppercase ml-1">MAD</span>
+                                        {new Intl.NumberFormat('fr-MA').format(Number(product.price))} <span className="text-sm uppercase ml-1">MAD</span>
                                     </span>
                                     {product.oldPrice && product.oldPrice > product.price && (
                                         <span className="text-xl text-slate-300 line-through font-bold">
-                                            {Number(product.oldPrice).toLocaleString()} MAD
+                                            {new Intl.NumberFormat('fr-MA').format(Number(product.oldPrice))} MAD
                                         </span>
                                     )}
                                 </div>
@@ -346,12 +363,14 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                     Ajouter au panier
                                 </button>
 
-                                <button
-                                    onClick={() => toggleWishlist(product)}
-                                    className={`size-14 rounded-2xl border-2 flex items-center justify-center transition-all ${inWishlist ? 'border-[#B8860B] text-[#B8860B] bg-[#B8860B]/5' : 'border-slate-100 text-slate-300 hover:border-slate-200 hover:text-slate-900'}`}
+                                <motion.button
+                                    whileTap={{ scale: 0.8 }}
+                                    onClick={() => toggleWishlist(product.id)}
+                                    className={`size-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${inWishlist ? 'bg-[#B8860B] text-white shadow-[#B8860B]/20' : 'bg-white border-2 border-slate-100 text-slate-300 hover:border-[#B8860B] hover:text-[#B8860B]'}`}
+                                    title={inWishlist ? "Retirer des favoris" : "Ajouter aux favoris"}
                                 >
                                     <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
-                                </button>
+                                </motion.button>
                             </div>
 
                             <button
@@ -468,29 +487,104 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Note Globale</p>
                                         </div>
                                     </div>
-                                    <div className="flex-1 space-y-6">
-                                        {reviews.length > 0 ? (
-                                            reviews.map((review) => (
-                                                <div key={review.id} className="bg-white border border-slate-50 rounded-3xl p-8 hover:shadow-xl transition-all">
-                                                    <div className="flex justify-between items-start mb-4">
-                                                        <div>
-                                                            <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{review.name}</h4>
-                                                            <div className="flex gap-1 mt-1">
-                                                                {[...Array(5)].map((_, i) => (
-                                                                    <Star key={i} size={10} className={i < review.rating ? 'text-[#B8860B] fill-[#B8860B]' : 'text-slate-100'} />
+                                    <div className="flex-1 space-y-12">
+                                        {/* Review Form */}
+                                        {!hasReviewed ? (
+                                            <div className="bg-slate-50 rounded-[40px] p-10 border-2 border-slate-100">
+                                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-8 flex items-center gap-3">
+                                                    <div className="size-10 rounded-2xl bg-[#B8860B] text-white flex items-center justify-center">
+                                                        <FileText size={20} />
+                                                    </div>
+                                                    Laisser un avis
+                                                </h3>
+                                                <form onSubmit={handleSubmitReview} className="space-y-6">
+                                                    <div className="grid md:grid-cols-2 gap-6">
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Votre Nom</label>
+                                                            <input 
+                                                                type="text" 
+                                                                value={reviewName}
+                                                                onChange={(e) => setReviewName(e.target.value)}
+                                                                className="w-full h-14 bg-white border-2 border-transparent focus:border-[#B8860B]/20 rounded-2xl px-6 font-bold text-slate-900 outline-none transition-all" 
+                                                                placeholder="Ex: Jean Dupont"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Note</label>
+                                                            <div className="flex items-center gap-2 h-14 px-4 bg-white rounded-2xl">
+                                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                                    <button
+                                                                        key={star}
+                                                                        type="button"
+                                                                        onClick={() => setReviewRating(star)}
+                                                                        onMouseEnter={() => setHoverRating(star)}
+                                                                        onMouseLeave={() => setHoverRating(0)}
+                                                                        className="p-1 transition-transform hover:scale-110"
+                                                                    >
+                                                                        <Star 
+                                                                            size={24} 
+                                                                            className={`${(hoverRating || reviewRating) >= star ? 'text-[#B8860B] fill-[#B8860B]' : 'text-slate-100'}`} 
+                                                                        />
+                                                                    </button>
                                                                 ))}
                                                             </div>
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-slate-400">{new Date(review.createdAt).toLocaleDateString()}</span>
                                                     </div>
-                                                    <p className="text-slate-500 text-sm leading-relaxed">{review.comment}</p>
-                                                </div>
-                                            ))
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Votre Commentaire</label>
+                                                        <textarea 
+                                                            value={reviewComment}
+                                                            onChange={(e) => setReviewComment(e.target.value)}
+                                                            className="w-full h-32 bg-white border-2 border-transparent focus:border-[#B8860B]/20 rounded-2xl px-6 py-4 font-bold text-slate-900 outline-none transition-all resize-none" 
+                                                            placeholder="Partagez votre expérience avec ce produit..."
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <button 
+                                                        type="submit"
+                                                        className="h-14 bg-[#B8860B] text-white px-10 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-[#966d09] transition-all shadow-xl shadow-[#B8860B]/20"
+                                                    >
+                                                        Publier mon avis
+                                                    </button>
+                                                </form>
+                                            </div>
                                         ) : (
-                                            <div className="text-center py-20 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-100">
-                                                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aucun avis pour le moment</p>
+                                            <div className="bg-emerald-50 rounded-[40px] p-10 border-2 border-emerald-100 flex flex-col items-center text-center">
+                                                <div className="size-16 rounded-full bg-emerald-500 text-white flex items-center justify-center mb-4">
+                                                    <CheckCircle2 size={32} />
+                                                </div>
+                                                <h3 className="text-xl font-black text-emerald-900 uppercase tracking-tight mb-2">Avis déjà envoyé</h3>
+                                                <p className="text-emerald-600 font-medium max-w-sm">
+                                                    Merci ! Vous avez déjà partagé votre avis sur ce produit. Votre contribution aide la communauté.
+                                                </p>
                                             </div>
                                         )}
+
+                                        <div className="space-y-6">
+                                            {reviews.length > 0 ? (
+                                                reviews.map((review) => (
+                                                    <div key={review.id} className="bg-white border border-slate-50 rounded-3xl p-8 hover:shadow-xl transition-all">
+                                                        <div className="flex justify-between items-start mb-4">
+                                                            <div>
+                                                                <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{review.name}</h4>
+                                                                <div className="flex gap-1 mt-1">
+                                                                    {[...Array(5)].map((_, i) => (
+                                                                        <Star key={i} size={10} className={i < review.rating ? 'text-[#B8860B] fill-[#B8860B]' : 'text-slate-100'} />
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                            <span className="text-[10px] font-bold text-slate-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                                        </div>
+                                                        <p className="text-slate-500 text-sm leading-relaxed">{review.comment}</p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="text-center py-20 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-100">
+                                                    <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aucun avis pour le moment</p>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>

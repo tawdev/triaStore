@@ -239,16 +239,28 @@ import Cookies from 'js-cookie';
 
 /**
  * Converts a relative /uploads/... path to a full URL using the API base.
- * External URLs (http/https/data:) are returned as-is.
+ * External URLs (http/https/data:/ //) are returned as-is.
  */
-function normalizeImageUrl(url: string | null | undefined): string | null {
-    if (!url) return null;
-    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
-        return url;
+export function normalizeImageUrl(url: string | null | undefined): string | null {
+    if (!url || typeof url !== 'string') return null;
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+
+    // Already absolute or protocol-relative
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:') || trimmed.startsWith('//')) {
+        return trimmed;
     }
     
+    // If it looks like a domain (contains a dot before any slash and doesn't start with /), 
+    // it's likely an external URL missing the protocol.
+    const firstDot = trimmed.indexOf('.');
+    const firstSlash = trimmed.indexOf('/');
+    if (firstDot !== -1 && (firstSlash === -1 || firstDot < firstSlash) && !trimmed.startsWith('/')) {
+        return `https://${trimmed}`;
+    }
+
     const base = API_BASE.replace(/\/$/, '');
-    const path = url.replace(/^\//, '');
+    const path = trimmed.replace(/^\//, '');
     
     // If the path already starts with 'api/', don't prepend it if the base already ends with /api
     if (path.startsWith('api/') && base.endsWith('/api')) {
@@ -311,15 +323,34 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
     
     const isFormData = options.body instanceof FormData;
     
-    const res = await fetch(url, {
-        cache: 'no-store',
-        ...options,
-        headers: {
-            ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            ...(options.headers || {}),
-        },
-    });
+    let res: Response;
+    try {
+        res = await fetch(url, {
+            cache: 'no-store',
+            ...options,
+            headers: {
+                ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                ...(options.headers || {}),
+            },
+        });
+    } catch (e: any) {
+        // Simple retry for "Failed to fetch"
+        if (e.message === 'Failed to fetch') {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            res = await fetch(url, {
+                cache: 'no-store',
+                ...options,
+                headers: {
+                    ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                    ...(options.headers || {}),
+                },
+            });
+        } else {
+            throw e;
+        }
+    }
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || `API error ${res.status}: ${path}`);

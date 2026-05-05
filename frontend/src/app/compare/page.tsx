@@ -7,7 +7,7 @@ import { api, Product } from '@/app/lib/api';
 import { useCompare } from '@/app/context/CompareContext';
 import { useCart } from '@/app/context/CartContext';
 import {
-    GitCompare, X, ShoppingBag, ArrowLeft, Trash2,
+    GitCompare, X, ShoppingBag, ArrowLeft, ArrowRight, Trash2,
     CheckCircle2, AlertCircle, Sparkles, Star,
     Plus, Box, Zap, Maximize, Palette, Layers
 } from 'lucide-react';

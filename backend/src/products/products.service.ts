@@ -157,13 +157,26 @@ export class ProductsService {
     }
 
     async update(id: number, data: UpdateProductDto): Promise<Product> {
-        let product = await this.findOne(id);
-        if (!product) {
-            throw new Error('Product not found');
+        // Clean the data to remove any undefined fields
+        const updateData: any = {};
+        const fields = [
+            'name', 'sku', 'price', 'oldPrice', 'stock', 'imageUrl', 
+            'imageUrls', 'categoryId', 'brandId', 'tags', 'description', 
+            'onSale', 'ecoFriendly'
+        ];
+
+        for (const field of fields) {
+            if (data[field] !== undefined) {
+                updateData[field] = data[field];
+            }
         }
 
-        Object.assign(product, data);
-        return this.productRepository.save(product);
+        await this.productRepository.update(id, updateData);
+        
+        const updated = await this.findOne(id);
+        if (!updated) throw new Error('Product not found after update');
+        
+        return updated;
     }
 
     async remove(id: number): Promise<void> {

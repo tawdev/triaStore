@@ -3,19 +3,19 @@ import { api } from '@/app/lib/api';
 import HomeClient from '@/app/HomeClient';
 
 export const metadata: Metadata = {
-  title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
-  description: 'Découvrez Animal Food Express, la boutique en ligne n°1 au Maroc pour l\'alimentation et les accessoires premium pour chiens, chats, oiseaux et poissons. Livraison rapide partout au Maroc.',
+  title: 'Tria Lampe – Luminaires & Design d\'Exception au Maroc',
+  description: 'Découvrez Tria Lampe, la maison de luminaires haut de gamme au Maroc. Lustres en cristal, suspensions design et éclairages d\'exception pour vos espaces de prestige. Livraison dans tout le Maroc.',
   openGraph: {
-    title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
-    description: 'Découvrez Animal Food Express, la boutique en ligne n°1 au Maroc pour l\'alimentation et les accessoires premium pour chiens, chats, oiseaux et poissons.',
-    images: ['/hero_animals_v3.png'],
+    title: 'Tria Lampe – L\'Art de la Lumière',
+    description: 'Lustres en cristal, suspensions design et luminaires d\'exception. Chaque pièce Tria Lampe est une œuvre d\'art pour magnifier vos espaces.',
+    images: ['/tria-crystal/hero.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
-    description: 'Boutique en ligne spécialisée en alimentation et accessoires pour animaux au Maroc.',
-    images: ['/hero_animals_v3.png'],
+    title: 'Tria Lampe – Luminaires & Design d\'Exception',
+    description: 'Lustres en cristal, suspensions design et luminaires d\'exception pour vos espaces de prestige.',
+    images: ['/tria-crystal/hero.png'],
   },
 };
 

@@ -15,7 +15,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
-    const { addItem } = useCart();
+    const { addToCart } = useCart();
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
@@ -24,11 +24,13 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
     if (viewMode === 'list') {
         return (
             <div className="group bg-white rounded-[24px] overflow-hidden border border-slate-50 transition-all duration-300 hover:shadow-xl flex gap-6 p-4">
-                <div className="relative w-48 aspect-square overflow-hidden rounded-2xl bg-slate-50 shrink-0">
+                <div className="relative w-48 aspect-square overflow-hidden rounded-2xl bg-white shrink-0">
                     <Image
                         src={product.imageUrl || '/placeholder.png'}
                         alt={product.name}
                         fill
+                        quality={100}
+                        sizes="200px"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     {discount > 0 && (
@@ -47,27 +49,35 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
                             </Link>
                             <ProductRating productId={product.id} starSize={12} className="!gap-1" />
                         </div>
-                        <button 
-                            onClick={() => toggleWishlist(product)}
-                            className={`p-2 rounded-full transition-all ${isInWishlist(product.id) ? 'text-[#B8860B]' : 'text-slate-300 hover:text-[#B8860B]'}`}
+                        <motion.button 
+                            whileTap={{ scale: 0.8 }}
+                            onClick={() => toggleWishlist(product.id)}
+                            className={`p-2.5 rounded-2xl transition-all duration-500 ${isInWishlist(product.id) ? 'bg-[#B8860B] text-white shadow-xl shadow-[#B8860B]/20' : 'bg-slate-50 text-slate-300 hover:text-[#B8860B] hover:bg-white'}`}
                         >
-                            <Heart size={20} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-                        </button>
+                            <Heart size={18} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} className="transition-transform duration-500" />
+                        </motion.button>
                     </div>
                     <p className="text-slate-500 text-sm line-clamp-2 mb-4 font-medium">{product.description || 'Un luminaire d\'exception pour sublimer votre intérieur.'}</p>
                     <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-baseline gap-3">
-                            <span className="text-xl font-black text-slate-900">{product.price.toLocaleString()} MAD</span>
+                            <span className="text-xl font-black text-slate-900">{new Intl.NumberFormat('fr-MA').format(product.price)} MAD</span>
                             {product.oldPrice && (
-                                <span className="text-xs text-slate-400 line-through font-bold">{product.oldPrice.toLocaleString()} MAD</span>
+                                <span className="text-xs text-slate-400 line-through font-bold">{new Intl.NumberFormat('fr-MA').format(product.oldPrice)} MAD</span>
                             )}
                         </div>
-                        <button 
-                            onClick={() => addItem(product)}
+                        <motion.button 
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() => addToCart({ 
+                                productId: product.id, 
+                                name: product.name, 
+                                price: product.price, 
+                                imageUrl: product.imageUrl 
+                            })}
                             className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#B8860B] transition-all"
                         >
                             <ShoppingCart size={14} /> Ajouter
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
             </div>
@@ -75,80 +85,97 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
     }
 
     return (
-        <div className="group bg-white rounded-[32px] overflow-hidden border border-slate-50 transition-all duration-500 hover:shadow-2xl flex flex-col h-full">
+        <div className="group bg-white rounded-[28px] overflow-hidden border border-slate-100/60 transition-all duration-700 hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] flex flex-col h-full relative">
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden bg-slate-50 p-4">
-                <div className="relative w-full h-full overflow-hidden rounded-2xl">
+            <div className="relative aspect-[3/4] overflow-hidden bg-[#FAFAFA]">
+                <div className="relative w-full h-full">
                     <Image
                         src={product.imageUrl || '/placeholder.png'}
                         alt={product.name}
                         fill
-                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        quality={100}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-[2s] ease-out-expo group-hover:scale-110"
                     />
                 </div>
                 
                 {/* Badges */}
-                <div className="absolute top-6 left-6 flex flex-col gap-2">
+                <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
                     {discount > 0 && (
-                        <span className="bg-[#B8860B] text-white text-[9px] font-black px-2.5 py-1.5 rounded-lg uppercase tracking-widest shadow-xl">
+                        <span className="bg-[#B8860B] text-white text-[7px] font-black px-2.5 py-1 rounded-full uppercase tracking-[0.2em] shadow-md">
                             -{discount}%
                         </span>
                     )}
                     {isNew && !discount && (
-                        <span className="bg-slate-900 text-white text-[9px] font-black px-2.5 py-1.5 rounded-lg uppercase tracking-widest shadow-xl">
+                        <span className="bg-slate-900 text-white text-[7px] font-black px-2.5 py-1 rounded-full uppercase tracking-[0.2em] shadow-md">
                             Nouveau
                         </span>
                     )}
                 </div>
 
-                {/* Hover Actions */}
-                <div className="absolute inset-0 bg-slate-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-                    <button 
-                        onClick={() => toggleWishlist(product)}
-                        className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all translate-y-4 group-hover:translate-y-0 duration-300 shadow-xl ${isInWishlist(product.id) ? 'bg-[#B8860B] text-white' : 'bg-white text-slate-900 hover:bg-[#B8860B] hover:text-white'}`}
-                    >
-                        <Heart size={20} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-                    </button>
+                {/* Wishlist Button */}
+                <motion.button 
+                    whileTap={{ scale: 0.8 }}
+                    onClick={() => toggleWishlist(product.id)}
+                    className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 z-10 ${isInWishlist(product.id) ? 'bg-[#B8860B] text-white shadow-lg shadow-[#B8860B]/30' : 'bg-white/90 backdrop-blur-md text-slate-400 hover:text-[#B8860B]'}`}
+                >
+                    <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} strokeWidth={isInWishlist(product.id) ? 0 : 2} />
+                </motion.button>
+
+                {/* Premium Hover Overlay */}
+                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all duration-700 backdrop-blur-[1px] flex flex-col items-center justify-center gap-4">
                     <Link 
                         href={`/products/${product.id}`}
-                        className="w-11 h-11 bg-white text-slate-900 rounded-2xl flex items-center justify-center hover:bg-[#B8860B] hover:text-white transition-all translate-y-4 group-hover:translate-y-0 duration-300 delay-75 shadow-xl"
+                        className="bg-white text-slate-900 px-7 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] translate-y-10 group-hover:translate-y-0 transition-all duration-700 hover:bg-[#B8860B] hover:text-white shadow-2xl"
                     >
-                        <Eye size={20} />
+                        Voir le produit
                     </Link>
                 </div>
             </div>
 
-            {/* Content */}
-            <div className="p-6 flex flex-col flex-1">
-                <Link href={`/products/${product.id}`}>
-                    <h3 className="text-[15px] font-black text-slate-900 hover:text-[#B8860B] transition-colors truncate mb-1 uppercase tracking-tight">
+            {/* Content Section */}
+            <div className="p-6 flex flex-col flex-1 items-center text-center">
+                <span className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em] mb-2">Tria Collection</span>
+                
+                <Link href={`/products/${product.id}`} className="w-full">
+                    <h3 className="text-[13px] font-bold text-slate-900 hover:text-[#B8860B] transition-colors line-clamp-1 mb-2 uppercase tracking-tight">
                         {product.name}
                     </h3>
                 </Link>
                 
-                <div className="mb-4">
-                    <ProductRating productId={product.id} starSize={12} className="!gap-1" />
+                <div className="mb-5">
+                    <ProductRating productId={product.id} starSize={9} className="!gap-0.5 opacity-60" />
                 </div>
 
-                <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <div className="flex flex-col">
-                        <span className="text-lg font-black text-slate-900 tracking-tighter">
-                            {product.price.toLocaleString()} <span className="text-[10px] uppercase ml-0.5">MAD</span>
-                        </span>
+                <div className="mt-auto w-full flex items-center justify-between pt-5 border-t border-slate-50/80">
+                    <div className="flex flex-col items-start">
+                        <div className="flex items-baseline gap-1.5">
+                            <span className="text-lg font-bold text-slate-900 tracking-tighter">
+                                {new Intl.NumberFormat('fr-MA').format(product.price)}
+                            </span>
+                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">MAD</span>
+                        </div>
                         {product.oldPrice && (
-                            <span className="text-[11px] text-slate-400 line-through font-bold">
-                                {product.oldPrice.toLocaleString()} MAD
+                            <span className="text-[9px] text-slate-300 line-through font-bold tracking-tight">
+                                {new Intl.NumberFormat('fr-MA').format(product.oldPrice)} MAD
                             </span>
                         )}
                     </div>
                     
-                    <button 
-                        onClick={() => addItem(product)}
-                        className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-[#B8860B] hover:text-white hover:shadow-xl hover:shadow-[#B8860B]/20 transition-all group/btn"
+                    <motion.button 
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => addToCart({ 
+                            productId: product.id, 
+                            name: product.name, 
+                            price: product.price, 
+                            imageUrl: product.imageUrl 
+                        })}
+                        className="w-11 h-11 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-[#B8860B] hover:text-white transition-all group/cart"
                         title="Ajouter au panier"
                     >
-                        <ShoppingCart size={20} className="transition-transform group-hover/btn:scale-110" />
-                    </button>
+                        <ShoppingCart size={16} strokeWidth={2} className="group-hover/cart:scale-110 transition-transform" />
+                    </motion.button>
                 </div>
             </div>
         </div>

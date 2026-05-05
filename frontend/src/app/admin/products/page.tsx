@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { api, type Product, type ProductStats, type Brand, type Category } from '../../lib/api';
+import { api, normalizeImageUrl, type Product, type ProductStats, type Brand, type Category } from '../../lib/api';
 import { useNotification } from '../../context/NotificationContext';
 import { 
   Search, 
@@ -130,13 +130,18 @@ function ProductsContent() {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      const productData = {
-        ...newProduct,
+      const productData: any = {
+        name: newProduct.name,
+        sku: newProduct.sku,
         price: parseFloat(newProduct.price),
         oldPrice: newProduct.oldPrice ? parseFloat(newProduct.oldPrice) : null,
         stock: parseInt(newProduct.stock),
         categoryId: newProduct.categoryId ? Number(newProduct.categoryId) : null,
         brandId: newProduct.brandId ? Number(newProduct.brandId) : null,
+        imageUrl: newProduct.imageUrl,
+        imageUrls: newProduct.imageUrls,
+        tags: newProduct.tags,
+        description: newProduct.description,
       };
 
       if (editingProduct) {
@@ -166,8 +171,8 @@ function ProductsContent() {
       price: product.price.toString(),
       oldPrice: product.oldPrice ? product.oldPrice.toString() : '',
       stock: product.stock.toString(),
-      categoryId: product.categoryId || '',
-      brandId: product.brandId || '',
+      categoryId: (product.categoryId || product.category?.id || '').toString(),
+      brandId: (product.brandId || product.brand?.id || '').toString(),
       imageUrl: product.imageUrl || '',
       imageUrls: product.imageUrls || [],
       tags: product.tags || [],
@@ -404,17 +409,105 @@ function ProductsContent() {
 
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Images du Produit</label>
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-4 gap-4 mb-6">
                     {newProduct.imageUrls.map((url, i) => (
-                      <div key={i} className="relative aspect-square rounded-2xl bg-slate-50 overflow-hidden group border border-slate-100">
-                        <img src={url} className="w-full h-full object-contain p-2" />
-                        <button type="button" onClick={() => setNewProduct(p => ({...p, imageUrls: p.imageUrls.filter((_, idx) => idx !== i)}))} className="absolute top-2 right-2 size-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><X size={14}/></button>
+                      <div key={i} className={`relative aspect-square rounded-2xl bg-slate-50 overflow-hidden group border-2 transition-all flex items-center justify-center ${newProduct.imageUrl === url ? 'border-[#B8860B] shadow-lg shadow-[#B8860B]/10' : 'border-slate-100 hover:border-slate-200'}`}>
+                        {/* Background icon in case image is missing or broken */}
+                        <ImageIcon className="absolute text-slate-200" size={24} />
+                        
+                        {url && (
+                          <img 
+                            src={normalizeImageUrl(url) || url} 
+                            className="absolute inset-0 w-full h-full object-contain p-2 z-10" 
+                            alt="" 
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).classList.add('opacity-0');
+                            }}
+                          />
+                        )}
+
+                        {/* Actions Overlay */}
+                        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex flex-col items-center justify-center gap-2">
+                          <button 
+                            type="button" 
+                            onClick={() => setNewProduct(p => ({...p, imageUrl: url}))} 
+                            className={`size-8 rounded-full flex items-center justify-center transition-all ${newProduct.imageUrl === url ? 'bg-[#B8860B] text-white' : 'bg-white text-slate-400 hover:text-[#B8860B]'}`}
+                            title="Définir comme image principale"
+                          >
+                            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                          </button>
+                          <button 
+                            type="button" 
+                            onClick={() => setNewProduct(p => {
+                              const filtered = p.imageUrls.filter((_, idx) => idx !== i);
+                              return {
+                                ...p, 
+                                imageUrls: filtered,
+                                imageUrl: p.imageUrl === url ? (filtered[0] || '') : p.imageUrl
+                              };
+                            })} 
+                            className="size-8 bg-rose-500 text-white rounded-full flex items-center justify-center hover:bg-rose-600 transition-colors"
+                            title="Supprimer"
+                          >
+                            <X size={16}/>
+                          </button>
+                        </div>
+
+                        {/* Main Image Badge */}
+                        {newProduct.imageUrl === url && (
+                          <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#B8860B] text-white text-[8px] font-black uppercase tracking-widest rounded-full z-20">Principal</div>
+                        )}
                       </div>
                     ))}
                     <label className="aspect-square rounded-2xl border-2 border-dashed border-slate-100 hover:border-[#B8860B] hover:bg-[#B8860B]/5 flex flex-col items-center justify-center cursor-pointer transition-all group">
                       {isUploading ? <Loader2 size={24} className="text-[#B8860B] animate-spin" /> : <Camera size={24} className="text-slate-200 group-hover:text-[#B8860B]" />}
+                      <span className="text-[9px] font-black text-slate-300 mt-2 uppercase tracking-widest group-hover:text-[#B8860B]">Uploader</span>
                       <input type="file" multiple hidden onChange={handleImageChange} />
                     </label>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                      <input 
+                        type="url" 
+                        id="image-url-input"
+                        placeholder="Ou collez l'URL d'une image ici..." 
+                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-transparent rounded-2xl text-sm font-bold focus:bg-white focus:border-[#B8860B]/20 focus:ring-4 focus:ring-[#B8860B]/5 outline-none transition-all"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = (e.target as HTMLInputElement).value.trim();
+                            if (val) {
+                              setNewProduct(prev => ({
+                                ...prev,
+                                imageUrls: [...prev.imageUrls, val],
+                                imageUrl: prev.imageUrl || val
+                              }));
+                              (e.target as HTMLInputElement).value = '';
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('image-url-input') as HTMLInputElement;
+                        const val = input.value.trim();
+                        if (val) {
+                          setNewProduct(prev => ({
+                            ...prev,
+                            imageUrls: [...prev.imageUrls, val],
+                            imageUrl: prev.imageUrl || val
+                          }));
+                          input.value = '';
+                        }
+                      }}
+                      className="px-6 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#B8860B] transition-all"
+                    >
+                      Ajouter
+                    </button>
                   </div>
                 </div>
               </div>

@@ -41,11 +41,11 @@ export class Product {
 
     @ManyToOne(() => Category, { nullable: true, eager: false })
     @JoinColumn({ name: 'categoryId' })
-    category: Category;
+    category: Category | null;
 
     @ManyToOne(() => Brand, { nullable: true, eager: false })
     @JoinColumn({ name: 'brandId' })
-    brand: Brand;
+    brand: Brand | null;
 
     @Column({ nullable: true })
     categoryId: number;

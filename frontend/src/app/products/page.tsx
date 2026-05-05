@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
+import { ChevronLeft, ChevronRight, ChevronDown, LayoutGrid, List, Search, SlidersHorizontal, ArrowRight, Truck, ShieldCheck, RotateCcw, Star, Sparkles, Box } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api, type Product, type Category } from '@/app/lib/api';
-import { ChevronRight, ChevronDown, LayoutGrid, List, Search, SlidersHorizontal, ArrowRight, Truck, ShieldCheck, RotateCcw, Star, Sparkles, Box } from 'lucide-react';
+
 import ProductCard from '@/app/components/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -133,7 +134,7 @@ function ProductListingContent() {
         {/* Background Image with Parallax-ready styling */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop" 
+            src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=2070&auto=format&fit=crop" 
             alt="Luxury Architecture"
             className="w-full h-full object-cover opacity-60 scale-105"
           />

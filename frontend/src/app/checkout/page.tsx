@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { 
     ShoppingBag, 
     ArrowLeft, 
+    ArrowRight,
     ShieldCheck, 
     Truck, 
     Phone, 
@@ -76,7 +77,7 @@ export default function CheckoutPage() {
                     name: item.name
                 })),
                 totalPrice: finalTotal,
-                status: 'pending'
+                status: 'pending' as const
             };
 
             const response = await api.createOrder(orderData);

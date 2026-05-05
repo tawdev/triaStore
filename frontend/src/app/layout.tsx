@@ -63,7 +63,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import NotificationOverlay from "./components/NotificationOverlay";
 import ScrollToTop from "./components/ScrollToTop";
-import CustomCursor from "./components/CustomCursor";
+
 
 export default function RootLayout({
   children,
@@ -105,7 +105,7 @@ export default function RootLayout({
                       </PublicShell>
                       <NotificationOverlay />
                       <ScrollToTop />
-                      <CustomCursor />
+
                     </CartProvider>
                   </CompareProvider>
                 </WishlistProvider>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNotification } from '../../context/NotificationContext';
 import { useSettings } from '../../context/SettingsContext';
-import { api, type StoreSettings } from '../../lib/api';
+import { api, normalizeImageUrl, type StoreSettings } from '../../lib/api';
 
 export default function AdminSettingsPage() {
     const { showToast } = useNotification();
@@ -229,8 +229,15 @@ export default function AdminSettingsPage() {
                                 <div className="flex items-start gap-4">
                                     {/* Logo Preview */}
                                     <div className="size-[88px] rounded-xl bg-[#2a303c] flex items-center justify-center border border-slate-800 overflow-hidden shrink-0 mt-1 relative group">
-                                        {settings.logoUrl ? (
-                                            <img src={settings.logoUrl} alt="Store Logo" className="w-full h-full object-contain" />
+                                        {settings.logoUrl?.trim() ? (
+                                            <img 
+                                                src={normalizeImageUrl(settings.logoUrl) || settings.logoUrl} 
+                                                alt="Store Logo" 
+                                                className="w-full h-full object-contain" 
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/2a303c/cbd5e1?text=Logo';
+                                                }}
+                                            />
                                         ) : (
                                             <div className="flex flex-col items-center">
                                                 <span className="material-symbols-outlined text-[#B8860B] text-2xl mb-1">light</span>
@@ -244,7 +251,7 @@ export default function AdminSettingsPage() {
                                         )}
                                     </div>
 
-                                    <div className="space-y-4 pt-4">
+                                    <div className="space-y-4 pt-4 flex-1">
                                         <div className="flex flex-wrap items-center gap-3">
                                             <div className="relative">
                                                 <button 
@@ -252,7 +259,7 @@ export default function AdminSettingsPage() {
                                                     disabled={isUploading}
                                                     className="h-9 px-6 rounded-lg bg-primary hover:opacity-90 text-white text-[13px] font-bold transition-opacity disabled:opacity-50"
                                                 >
-                                                    {isUploading ? 'Uploading...' : 'Change Logo'}
+                                                    {isUploading ? 'Uploading...' : 'Upload File'}
                                                 </button>
                                                 <input 
                                                     ref={fileInputRef}
@@ -260,6 +267,15 @@ export default function AdminSettingsPage() {
                                                     accept="image/*" 
                                                     className="hidden" 
                                                     onChange={handleLogoChange}
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-[200px]">
+                                                <input
+                                                    type="url"
+                                                    value={settings.logoUrl || ''}
+                                                    onChange={(e) => setSettings({ ...settings, logoUrl: e.target.value || null })}
+                                                    placeholder="Ou collez l'URL de l'image ici..."
+                                                    className="w-full h-9 px-4 rounded-lg bg-white border border-slate-200 text-[13px] font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
                                                 />
                                             </div>
                                             {settings.logoUrl && (

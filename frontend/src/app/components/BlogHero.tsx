@@ -14,7 +14,7 @@ const BlogHero: React.FC<BlogHeroProps> = ({ search, setSearch }) => {
       {/* Background with Luxury Interior */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-overlay scale-105"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1600')" }}
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=1600')" }}
       />
       
       {/* Grid Pattern Overlay */}

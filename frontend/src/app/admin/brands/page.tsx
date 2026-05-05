@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, type Brand } from '../../lib/api';
+import { api, normalizeImageUrl, type Brand } from '../../lib/api';
 import { useNotification } from '../../context/NotificationContext';
 
 export default function AdminBrandsPage() {
@@ -140,12 +140,15 @@ export default function AdminBrandsPage() {
                             <div className="space-y-3">
                                 {/* Upload file */}
                                 <div className="flex items-center gap-4">
-                                    {formData.logoUrl && (
+                                    {formData.logoUrl?.trim() && (
                                         <div className="w-20 h-20 rounded-lg border border-slate-200 overflow-hidden bg-white flex items-center justify-center p-2">
                                             <img
-                                                src={formData.logoUrl.startsWith('http') ? formData.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${formData.logoUrl}`}
+                                                src={normalizeImageUrl(formData.logoUrl) || formData.logoUrl}
                                                 alt="Logo preview"
                                                 className="max-w-full max-h-full object-contain"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/f8fafc/cbd5e1?text=Logo+invalide';
+                                                }}
                                             />
                                         </div>
                                     )}
@@ -160,19 +163,23 @@ export default function AdminBrandsPage() {
                                         />
                                     </label>
                                 </div>
-                                {/* OR URL */}
                                 <div className="flex items-center gap-3">
-                                    <div className="flex-1 h-px bg-slate-200" />
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">ou URL</span>
-                                    <div className="flex-1 h-px bg-slate-200" />
+                                    <div className="flex-1 h-px bg-slate-100" />
+                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">ou URL directe</span>
+                                    <div className="flex-1 h-px bg-slate-100" />
                                 </div>
-                                <input
-                                    type="url"
-                                    value={formData.logoUrl.startsWith('http') ? formData.logoUrl : ''}
-                                    onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-                                    placeholder="https://exemple.com/logo.png"
-                                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                                />
+                                <div className="relative group">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
+                                        <span className="material-symbols-outlined text-[20px]">link</span>
+                                    </div>
+                                    <input
+                                        type="url"
+                                        value={formData.logoUrl.startsWith('http') ? formData.logoUrl : ''}
+                                        onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+                                        placeholder="Collez l'URL du logo ici..."
+                                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -233,11 +240,14 @@ export default function AdminBrandsPage() {
                                 <tr key={brand.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="w-16 h-12 rounded-lg bg-white border border-slate-100 flex items-center justify-center p-1.5 overflow-hidden">
-                                            {brand.logoUrl ? (
+                                            {brand.logoUrl?.trim() ? (
                                                 <img
-                                                    src={brand.logoUrl.startsWith('http') ? brand.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${brand.logoUrl}`}
+                                                    src={normalizeImageUrl(brand.logoUrl) || brand.logoUrl}
                                                     alt={brand.name}
                                                     className="max-w-full max-h-full object-contain"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/f8fafc/cbd5e1?text=X';
+                                                    }}
                                                 />
                                             ) : (
                                                 <span className="text-xs font-bold text-slate-300">N/A</span>

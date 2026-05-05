@@ -136,49 +136,55 @@ export default function AdminTestimonialsPage() {
                             <motion.div 
                                 layout
                                 key={testimonial.id}
-                                className="bg-white rounded-[32px] border border-slate-100 shadow-sm p-8 hover:shadow-md transition-shadow group flex flex-col h-full"
+                                className="bg-white rounded-[32px] border border-slate-100/60 shadow-sm p-8 hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500 group flex flex-col h-full relative overflow-hidden"
                             >
-                                <div className="flex items-start justify-between mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xl italic uppercase border-2 border-primary/20">
+                                {/* Active Status Indicator - Top Right Corner */}
+                                <div className="absolute top-0 right-0 p-1">
+                                    <div className={`px-3 py-1 rounded-bl-2xl text-[9px] font-black uppercase tracking-widest ${testimonial.isActive ? 'bg-green-50 text-green-600 border-l border-b border-green-100' : 'bg-slate-50 text-slate-400 border-l border-b border-slate-100'}`}>
+                                        {testimonial.isActive ? 'Visible' : 'Masqué'}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start justify-between mb-8">
+                                    <div className="flex items-center gap-5">
+                                        <div className="size-16 rounded-2xl bg-[#B8860B]/10 flex items-center justify-center text-[#B8860B] font-black text-xl italic uppercase border border-[#B8860B]/20 shadow-inner">
                                             {testimonial.initial || testimonial.name.substring(0, 2)}
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-black text-slate-900 leading-tight italic uppercase">{testimonial.name}</h3>
-                                            <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">{testimonial.role}</p>
+                                            <h3 className="text-[17px] font-black text-slate-900 leading-tight italic uppercase tracking-tight">{testimonial.name}</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1.5">{testimonial.role || 'Client Tria'}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-1">
+                                </div>
+
+                                <div className="flex-1 relative mb-8">
+                                    <Quote size={32} className="absolute -top-4 -left-2 text-slate-50 opacity-50 rotate-180" />
+                                    <p className="text-slate-600 font-medium leading-relaxed italic relative z-10 pl-4 text-sm">
+                                        &quot;{testimonial.content}&quot;
+                                    </p>
+                                </div>
+
+                                <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
                                         <button 
                                             onClick={() => {
                                                 setEditingTestimonial(testimonial);
                                                 setIsModalOpen(true);
                                             }}
-                                            className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-primary/10 hover:text-primary transition-all"
+                                            className="px-5 py-2.5 rounded-xl bg-slate-50 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all flex items-center gap-2"
                                         >
-                                            <Edit2 size={16} />
+                                            <Edit2 size={14} /> Modifier
                                         </button>
                                         <button 
                                             onClick={() => handleDelete(testimonial.id)}
-                                            className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
+                                            className="p-2.5 rounded-xl text-slate-300 hover:text-red-500 transition-all"
+                                            title="Supprimer"
                                         >
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
-                                </div>
-                                <div className="flex-1 relative">
-                                    <Quote size={24} className="absolute -top-2 -left-2 text-slate-100 rotate-180" />
-                                    <p className="text-slate-600 font-medium leading-relaxed italic relative z-10">
-                                        &quot;{testimonial.content}&quot;
-                                    </p>
-                                </div>
-                                <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <div className={`size-2 rounded-full ${testimonial.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-slate-300'}`}></div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{testimonial.isActive ? 'Visible' : 'Masqué'}</span>
-                                    </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-200">
-                                        {new Date(testimonial.createdAt).toLocaleDateString()}
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">
+                                        {new Date(testimonial.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                     </span>
                                 </div>
                             </motion.div>

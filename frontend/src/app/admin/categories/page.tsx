@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { api, type Category } from '../../lib/api';
+import { api, normalizeImageUrl, type Category } from '../../lib/api';
 import { useNotification } from '../../context/NotificationContext';
 import { 
     LayoutGrid, 
@@ -15,8 +15,11 @@ import {
     ChevronDown,
     CheckCircle2,
     Loader2,
-    Layers
+    Layers,
+    Image as ImageIcon,
+    Upload
 } from 'lucide-react';
+import Image from 'next/image';
 
 // ─── Loading skeleton ─────────────────────────────────────────────────────────
 function Skeleton({ className }: { className?: string }) {
@@ -32,8 +35,23 @@ export default function AdminCategoriesPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-    const [formData, setFormData] = useState({ name: '', description: '', isActive: true, parentId: null as number | null });
+    const [formData, setFormData] = useState({ name: '', description: '', isActive: true, parentId: null as number | null, imageUrl: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        try {
+            const results = await api.uploadImages(Array.from(files));
+            if (results && results.length > 0) {
+                setFormData(prev => ({ ...prev, imageUrl: results[0].url }));
+                showToast('Image téléchargée !', 'success');
+            }
+        } catch {
+            showToast('Erreur lors du téléchargement.', 'error');
+        }
+    };
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -98,7 +116,7 @@ export default function AdminCategoriesPage() {
             }
             setIsModalOpen(false);
             setEditingCategory(null);
-            setFormData({ name: '', description: '', isActive: true, parentId: null });
+            setFormData({ name: '', description: '', isActive: true, parentId: null, imageUrl: '' });
             loadData();
         } catch {
             showToast('Erreur lors de la sauvegarde.', 'error');
@@ -113,7 +131,8 @@ export default function AdminCategoriesPage() {
             name: category.name,
             description: category.description || '',
             isActive: category.isActive,
-            parentId: category.parentId || null
+            parentId: category.parentId || null,
+            imageUrl: category.imageUrl || ''
         });
         setIsModalOpen(true);
     };
@@ -139,7 +158,7 @@ export default function AdminCategoriesPage() {
                     <button
                         onClick={() => {
                             setEditingCategory(null);
-                            setFormData({ name: '', description: '', isActive: true, parentId: null });
+                            setFormData({ name: '', description: '', isActive: true, parentId: null, imageUrl: '' });
                             setIsModalOpen(true);
                         }}
                         className="bg-[#B8860B] hover:bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-[#B8860B]/20 transition-all flex items-center gap-3"
@@ -175,8 +194,8 @@ export default function AdminCategoriesPage() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="bg-slate-50/50 border-b border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th className="px-8 py-6">Image</th>
                                     <th className="px-8 py-6">Nom de la Catégorie</th>
-                                    <th className="px-8 py-6">Description</th>
                                     <th className="px-8 py-6">Articles</th>
                                     <th className="px-8 py-6">Statut</th>
                                     <th className="px-8 py-6 text-right">Actions</th>
@@ -195,6 +214,20 @@ export default function AdminCategoriesPage() {
                                 ) : (
                                     paginatedCategories.map((category) => (
                                         <tr key={category.id} className="hover:bg-slate-50/50 transition-colors group">
+                                            <td className="px-8 py-6">
+                                                <div className="size-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden flex items-center justify-center">
+                                                    {category.imageUrl ? (
+                                                        <img 
+                                                            src={normalizeImageUrl(category.imageUrl) || category.imageUrl} 
+                                                            alt={category.name} 
+                                                            className="w-full h-full object-cover" 
+                                                            onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/f8fafc/cbd5e1?text=X'; }}
+                                                        />
+                                                    ) : (
+                                                        <ImageIcon size={18} className="text-slate-200" />
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3">
                                                     {[...Array(category.depth)].map((_, i) => (
@@ -286,15 +319,53 @@ export default function AdminCategoriesPage() {
                                 <X size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-10 space-y-8">
+                        <form onSubmit={handleSubmit} className="p-10 space-y-8 max-h-[80vh] overflow-y-auto no-scrollbar">
                             <div className="space-y-6">
+                                <div>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Image de la Catégorie</label>
+                                    <div className="flex items-center gap-6">
+                                        <div className="size-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                                            {formData.imageUrl ? (
+                                                <img 
+                                                    src={normalizeImageUrl(formData.imageUrl) || formData.imageUrl} 
+                                                    alt="Preview" 
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/f8fafc/cbd5e1?text=Invalide'; }}
+                                                />
+                                            ) : (
+                                                <ImageIcon className="text-slate-300" size={24} />
+                                            )}
+                                            <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                                            <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <Upload size={20} className="text-white" />
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 space-y-2">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ou coller une URL directe</p>
+                                            <div className="relative">
+                                                <input 
+                                                    type="text" 
+                                                    value={formData.imageUrl} 
+                                                    onChange={e => setFormData({ ...formData, imageUrl: e.target.value.trim() })} 
+                                                    className="w-full px-4 py-3 bg-slate-50 border border-transparent rounded-xl text-xs font-bold focus:bg-white focus:border-[#B8860B]/20 outline-none transition-all" 
+                                                    placeholder="https://images.com/photo.jpg" 
+                                                />
+                                                {formData.imageUrl && (
+                                                    <button type="button" onClick={() => setFormData({ ...formData, imageUrl: '' })} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500">
+                                                        <X size={14} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Nom de la Catégorie</label>
                                     <input required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-5 py-4 bg-slate-50 border border-transparent rounded-2xl text-sm font-bold focus:bg-white focus:border-[#B8860B]/20 focus:ring-4 focus:ring-[#B8860B]/5 outline-none transition-all" placeholder="Ex: Suspensions Modernes" />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Description</label>
-                                    <textarea rows={3} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full px-5 py-4 bg-slate-50 border border-transparent rounded-2xl text-sm font-bold focus:bg-white focus:border-[#B8860B]/20 focus:ring-4 focus:ring-[#B8860B]/5 outline-none transition-all resize-none" placeholder="Une brève description..." />
+                                    <textarea rows={2} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full px-5 py-4 bg-slate-50 border border-transparent rounded-2xl text-sm font-bold focus:bg-white focus:border-[#B8860B]/20 focus:ring-4 focus:ring-[#B8860B]/5 outline-none transition-all resize-none" placeholder="Une brève description..." />
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Catégorie Parente</label>

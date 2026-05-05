@@ -59,7 +59,7 @@ export default function AboutUsPage() {
           style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         >
           <Image
-            src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=1920"
+            src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=1920"
             alt="Tria Lampe Workshop"
             fill
             className="object-cover"
@@ -115,7 +115,7 @@ export default function AboutUsPage() {
             <div className="relative">
                 <div className="aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl">
                     <Image
-                        src="https://images.unsplash.com/photo-1542728928-1413d1894ed1?auto=format&fit=crop&q=80&w=800"
+                        src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&q=80&w=800"
                         alt="Craftsmanship"
                         fill
                         className="object-cover"
@@ -237,7 +237,7 @@ export default function AboutUsPage() {
             </div>
             <div className="relative">
                 <div className="aspect-square rounded-[60px] overflow-hidden">
-                    <Image src="https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=800" alt="Showroom" fill className="object-cover" />
+                    <Image src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800" alt="Showroom Lustres Cristal" fill className="object-cover" />
                 </div>
                 <div className="absolute top-10 -left-10 size-40 bg-[#B8860B] rounded-[40px] flex items-center justify-center rotate-12 shadow-2xl">
                     <Lightbulb size={60} className="text-white -rotate-12" />

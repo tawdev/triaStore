@@ -442,7 +442,7 @@ export default function AdminBlogPage() {
                                                     <td className="px-5 sm:px-8 py-4 sm:py-6">
                                                         <div className="flex items-center gap-3 sm:gap-4">
                                                             <div className="size-10 sm:size-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
-                                                                {post.imageUrl ? <img src={post.imageUrl} className="size-full object-contain" /> : <div className="size-full flex items-center justify-center text-slate-400"><span className="material-symbols-outlined text-[18px] sm:text-[20px]">image</span></div>}
+                                                                {post.imageUrl?.trim() ? <img src={post.imageUrl} className="size-full object-contain" alt="" /> : <div className="size-full flex items-center justify-center text-slate-400"><span className="material-symbols-outlined text-[18px] sm:text-[20px]">image</span></div>}
                                                             </div>
                                                             <div className="max-w-[150px] sm:max-w-[300px]">
                                                                 <p className="text-[13px] sm:text-[14px] font-bold text-slate-900 line-clamp-1" title={post.title}>{post.title}</p>
@@ -790,7 +790,7 @@ export default function AdminBlogPage() {
                                     </div>
                                     <div className="lg:col-span-2">
                                         <div className="relative group aspect-[16/7] rounded-[32px] bg-white border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-green-500/50 shadow-sm cursor-pointer">
-                                            {form.imageUrl ? (
+                                            {form.imageUrl?.trim() ? (
                                                 <>
                                                     <img src={form.imageUrl} className="size-full object-contain transition-transform duration-700 group-hover:scale-105" alt="Preview" />
                                                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
