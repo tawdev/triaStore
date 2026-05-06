@@ -38,6 +38,10 @@ const sections = [
 ];
 
 export default function ConditionsGeneralesPage() {
+    const [mounted, setMounted] = (require('react') as typeof import('react')).useState(false);
+    (require('react') as typeof import('react')).useEffect(() => {
+        setMounted(true);
+    }, []);
     return (
         <div className="flex-1 bg-white min-h-screen">
             {/* Hero Header */}
@@ -99,7 +103,7 @@ export default function ConditionsGeneralesPage() {
                     <div className="mt-32 p-12 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200 text-center">
                         <Sparkles className="size-8 text-[#B8860B] mx-auto mb-6 opacity-30" />
                         <p className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">
-                            Mise à jour prestige : {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase()}
+                            Mise à jour prestige : {mounted ? new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase() : '...'}
                         </p>
                     </div>
                 </div>

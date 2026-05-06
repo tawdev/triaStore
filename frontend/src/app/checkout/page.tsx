@@ -283,7 +283,7 @@ export default function CheckoutPage() {
                                             <span className="font-black text-white text-sm uppercase tracking-tight leading-tight line-clamp-1">{item.name}</span>
                                             <span className="text-[10px] font-black text-[#B8860B] uppercase tracking-[0.3em] mt-1">Qté: {item.quantity}</span>
                                         </div>
-                                        <span className="font-black text-white text-sm">{(item.price * item.quantity).toLocaleString()} <span className="text-[10px]">MAD</span></span>
+                                        <span className="font-black text-white text-sm">{api.formatPrice(item.price * item.quantity)} <span className="text-[10px]">MAD</span></span>
                                     </div>
                                 ))}
                             </div>
@@ -291,12 +291,12 @@ export default function CheckoutPage() {
                             <div className="border-t border-white/5 pt-10 space-y-6 relative z-10">
                                 <div className="flex justify-between text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">
                                     <span>Valeur de la sélection</span>
-                                    <span className="text-white">{totalPrice.toLocaleString()} MAD</span>
+                                    <span className="text-white">{api.formatPrice(totalPrice)} MAD</span>
                                 </div>
                                 <div className="flex justify-between text-slate-400 font-black uppercase tracking-[0.3em] text-[10px]">
                                     <span>Logistique Prestige</span>
                                     <span className={deliveryFee === 0 ? 'text-[#B8860B]' : 'text-white'}>
-                                        {deliveryFee === 0 ? 'OFFERTE' : `${deliveryFee.toLocaleString()} MAD`}
+                                        {deliveryFee === 0 ? 'OFFERTE' : `${api.formatPrice(deliveryFee)} MAD`}
                                     </span>
                                 </div>
                                 
@@ -304,7 +304,7 @@ export default function CheckoutPage() {
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B]">Total Final</p>
                                         <p className="text-5xl font-black tracking-tighter text-white italic">
-                                            {finalTotal.toLocaleString()} <span className="text-xl">MAD</span>
+                                            {api.formatPrice(finalTotal)} <span className="text-xl">MAD</span>
                                         </p>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">

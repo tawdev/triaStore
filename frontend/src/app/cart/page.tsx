@@ -126,34 +126,89 @@ export default function ShoppingCartPage() {
 
     if (isConfirmed) {
         return (
-            <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 bg-white">
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="size-32 bg-[#B8860B]/10 rounded-[40px] flex items-center justify-center mb-10"
-                >
-                    <CheckCircle2 size={56} className="text-[#B8860B]" />
-                </motion.div>
-                <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 uppercase tracking-tighter text-center">Protocole Envoyé</h1>
-                <p className="text-slate-400 mb-12 max-w-md text-center font-medium leading-relaxed">
-                    Votre demande de réservation a été transmise à notre conciergerie WhatsApp. Un conseiller vous accompagnera pour finaliser l'acquisition.
-                </p>
+            <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white relative overflow-hidden">
+                {/* Background Architectural Grid */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                     style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '60px 60px' }} 
+                />
                 
-                <div className="flex flex-col sm:flex-row gap-6 w-full max-w-lg">
-                    <Link
-                        href="/devis"
-                        className="flex items-center justify-center gap-3 bg-[#B8860B] text-white px-10 py-5 rounded-[20px] font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-900 transition-all shadow-xl shadow-[#B8860B]/20 flex-1"
-                    >
-                        <FileText size={18} />
-                        Télécharger le Devis
-                    </Link>
-                    <button
-                        onClick={() => { setIsConfirmed(false); clearCart(); }}
-                        className="flex items-center justify-center gap-3 bg-slate-100 text-slate-900 px-10 py-5 rounded-[20px] font-black uppercase text-[10px] tracking-[0.3em] hover:bg-slate-200 transition-all flex-1"
-                    >
-                        Nouvelle Curation
-                    </button>
-                </div>
+                {/* Decorative Elements */}
+                <div className="absolute top-1/4 -left-20 size-96 bg-[#B8860B]/5 rounded-full blur-[100px]" />
+                <div className="absolute bottom-1/4 -right-20 size-96 bg-slate-900/5 rounded-full blur-[100px]" />
+
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="max-w-2xl w-full text-center relative z-10"
+                >
+                    <div className="relative inline-block mb-12">
+                        <motion.div 
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.3, duration: 0.8 }}
+                            className="size-40 bg-slate-900 rounded-[50px] flex items-center justify-center relative z-10 shadow-2xl shadow-slate-900/20"
+                        >
+                            <CheckCircle2 size={72} className="text-[#B8860B]" strokeWidth={1.5} />
+                        </motion.div>
+                        {/* Orbiting particles */}
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            className="absolute -inset-4 border border-dashed border-[#B8860B]/20 rounded-[60px]"
+                        />
+                        <div className="absolute -top-2 -right-2 size-6 bg-[#B8860B] rounded-full flex items-center justify-center shadow-lg">
+                            <Sparkles size={12} className="text-white" />
+                        </div>
+                    </div>
+
+                    <div className="space-y-6 mb-16">
+                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-50 border border-slate-100 mb-2">
+                            <span className="size-1.5 rounded-full bg-[#B8860B] animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Transmission de Protocole</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                            Demande <br /> <span className="text-[#B8860B]">Transmise</span>
+                        </h1>
+                        <div className="h-1 w-20 bg-[#B8860B] mx-auto rounded-full" />
+                        <p className="text-slate-500 max-w-lg mx-auto font-medium text-lg leading-relaxed">
+                            Votre curation a été confiée à notre conciergerie WhatsApp. Un expert en luminaires d&apos;exception prendra contact avec vous sous peu pour valider chaque détail de votre acquisition.
+                        </p>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                            <Link
+                                href="/devis"
+                                className="group flex items-center justify-center gap-4 bg-[#B8860B] text-white px-12 py-6 rounded-[24px] font-black uppercase text-[11px] tracking-[0.3em] hover:bg-slate-900 transition-all shadow-2xl shadow-[#B8860B]/20 w-full sm:min-w-[280px]"
+                            >
+                                <FileText size={20} className="group-hover:rotate-6 transition-transform" />
+                                Télécharger le Devis
+                            </Link>
+                        </motion.div>
+                        
+                        <motion.button 
+                            whileHover={{ scale: 1.02 }} 
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => { setIsConfirmed(false); clearCart(); }}
+                            className="group flex items-center justify-center gap-4 bg-white border-2 border-slate-100 text-slate-900 px-12 py-6 rounded-[24px] font-black uppercase text-[11px] tracking-[0.3em] hover:bg-slate-50 transition-all w-full sm:min-w-[280px]"
+                        >
+                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            Nouvelle Expérience
+                        </motion.button>
+                    </div>
+
+                    <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col md:flex-row items-center justify-center gap-10 text-slate-300">
+                        <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em]">
+                            <ShieldCheck size={16} className="text-[#B8860B]" />
+                            Traitement Prioritaire
+                        </div>
+                        <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em]">
+                            <Box size={16} className="text-[#B8860B]" />
+                            Logistique Sécurisée
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         );
     }
@@ -250,7 +305,7 @@ export default function ShoppingCartPage() {
                                         <div className="text-right">
                                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-1">Valorisation</p>
                                             <p className="text-2xl font-black text-slate-900 tracking-tighter">
-                                                {new Intl.NumberFormat('fr-MA').format(Number(item.price) * item.quantity)} <span className="text-sm">MAD</span>
+                                                {api.formatPrice(Number(item.price) * item.quantity)} <span className="text-sm">MAD</span>
                                             </p>
                                         </div>
                                     </div>
@@ -285,12 +340,12 @@ export default function ShoppingCartPage() {
                             <div className="space-y-6 mb-12 relative z-10">
                                 <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                                     <span>Valeur des pièces</span>
-                                    <span className="text-white">{new Intl.NumberFormat('fr-MA').format(Number(totalPrice))} MAD</span>
+                                    <span className="text-white">{api.formatPrice(totalPrice)} MAD</span>
                                 </div>
                                 <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                                     <span>Logistique Spécialisée</span>
                                     <span className={Number(totalPrice) >= 2000 ? 'text-[#B8860B]' : 'text-white'}>
-                                        {Number(totalPrice) >= 2000 ? 'OFFERTE' : '250,00 MAD'}
+                                        {Number(totalPrice) >= 2000 ? 'OFFERTE' : '250.00 MAD'}
                                     </span>
                                 </div>
                                 
@@ -299,7 +354,7 @@ export default function ShoppingCartPage() {
                                         <div>
                                             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B] mb-2">Total Estimé</p>
                                             <p className="text-5xl font-black tracking-tighter">
-                                                {new Intl.NumberFormat('fr-MA').format(Number(totalPrice) + (Number(totalPrice) >= 2000 ? 0 : 250))} <span className="text-xl">MAD</span>
+                                                {api.formatPrice(Number(totalPrice) + (Number(totalPrice) >= 2000 ? 0 : 250))} <span className="text-xl">MAD</span>
                                             </p>
                                         </div>
                                     </div>

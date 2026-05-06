@@ -2,8 +2,13 @@
 
 import { ShieldCheck, Eye, Lock, Database, Globe, UserCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export default function ConfidentialitePage() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
     return (
         <div className="flex-1 bg-white min-h-screen">
             {/* Header */}
@@ -109,7 +114,7 @@ export default function ConfidentialitePage() {
                 <div className="mt-40 pt-16 border-t border-slate-100 text-center">
                     <Sparkles className="size-8 text-[#B8860B] mx-auto mb-8 opacity-20" />
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
-                        Dernière Édition Prestige : {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase()}
+                        Dernière Édition Prestige : {mounted ? new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase() : '...'}
                     </p>
                 </div>
             </div>

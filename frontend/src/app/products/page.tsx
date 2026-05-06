@@ -220,7 +220,7 @@ function ProductListingContent() {
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black text-slate-300">0 MAD</span>
-                    <span className="text-lg font-black text-[#B8860B]">{maxPrice.toLocaleString()} MAD</span>
+                    <span className="text-lg font-black text-[#B8860B]">{api.formatPrice(maxPrice)} MAD</span>
                 </div>
                 <input 
                     type="range" 

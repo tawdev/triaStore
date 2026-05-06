@@ -203,7 +203,7 @@ export default function WishlistPage() {
                                     <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                                         <div className="flex flex-col">
                                             <span className="text-xl font-black text-slate-900 tracking-tighter">
-                                                {Number(product.price).toLocaleString()} <span className="text-[10px]">MAD</span>
+                                                {api.formatPrice(product.price)} <span className="text-[10px]">MAD</span>
                                             </span>
                                         </div>
 
@@ -261,7 +261,7 @@ export default function WishlistPage() {
                                             {product.name}
                                         </h4>
                                         <span className="text-lg font-black text-[#B8860B] tracking-tighter">
-                                            {Number(product.price).toLocaleString()} <span className="text-[10px]">MAD</span>
+                                            {api.formatPrice(product.price)} <span className="text-[10px]">MAD</span>
                                         </span>
                                     </Link>
                                 ))}

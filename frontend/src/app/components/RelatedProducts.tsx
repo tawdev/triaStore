@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api, Product } from '../lib/api';
 import ProductCard from './ProductCard';
+import { motion } from 'framer-motion';
 
 export default function RelatedProducts({ categoryId, currentProductId }: { categoryId?: number | null, currentProductId: number }) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,7 +13,6 @@ export default function RelatedProducts({ categoryId, currentProductId }: { cate
     async function load() {
       try {
         setLoading(true);
-        // Fetch more products than needed to ensure we have enough after filtering out current product
         const res = await api.getProducts({ categoryId: categoryId || undefined, limit: 12 });
         const related = res.data.filter(p => Number(p.id) !== currentProductId).slice(0, 4);
         setProducts(related);
@@ -25,21 +25,38 @@ export default function RelatedProducts({ categoryId, currentProductId }: { cate
     load();
   }, [categoryId, currentProductId]);
 
-  if (loading) return null;
-  if (!products || products.length === 0) return null;
+  if (loading || !products || products.length === 0) return null;
 
   return (
-    <div className="mt-16 mb-20 max-w-[1200px] mx-auto">
-      <div className="mb-8">
-        <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Produits connexes</h3>
-        <div className="h-[1px] w-full bg-slate-100 relative">
-          <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
+    <div className="mt-32 mb-20">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-12"
+      >
+        <div className="flex items-center gap-4 mb-4">
+          <div className="h-[1px] flex-1 bg-slate-100"></div>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Suggestions d'exception</span>
+          <div className="h-[1px] flex-1 bg-slate-100"></div>
         </div>
-      </div>
+        <h3 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter text-center">
+          Complétez votre <span className="text-[#B8860B]">Collection</span>
+        </h3>
+      </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product, idx) => (
+          <motion.div
+            key={product.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <ProductCard product={product} />
+          </motion.div>
         ))}
       </div>
     </div>

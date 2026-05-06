@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNotification } from '../../context/NotificationContext';
 import { useSettings } from '../../context/SettingsContext';
 import { api, normalizeImageUrl, type StoreSettings } from '../../lib/api';
+import { Lightbulb, Save, X, Upload, Trash2, Globe } from 'lucide-react';
 
 export default function AdminSettingsPage() {
     const { showToast } = useNotification();
@@ -240,7 +241,7 @@ export default function AdminSettingsPage() {
                                             />
                                         ) : (
                                             <div className="flex flex-col items-center">
-                                                <span className="material-symbols-outlined text-[#B8860B] text-2xl mb-1">light</span>
+                                                <Lightbulb className="text-[#B8860B] mb-1" size={24} />
                                                 <span className="text-[6px] font-bold text-slate-300 tracking-wider uppercase">TRIA LAMPE</span>
                                             </div>
                                         )}

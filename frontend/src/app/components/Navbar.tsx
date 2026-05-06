@@ -14,7 +14,8 @@ import {
     ArrowRight,
     Sparkles,
     Phone,
-    Truck
+    Truck,
+    Package
 } from 'lucide-react';
 import { api, type Category, type Product } from '../lib/api';
 import { useCart } from '../context/CartContext';
@@ -112,6 +113,7 @@ export default function Navbar() {
         { name: 'La Maison', href: '/about' },
         { name: 'Journal', href: '/blog' },
         { name: 'Contact', href: '/contact' },
+        { name: 'Suivi', href: '/track' },
     ];
 
     const handleSearch = (e?: React.FormEvent) => {
@@ -130,24 +132,48 @@ export default function Navbar() {
 
     return (
         <>
-            <div className={`fixed top-0 left-0 right-0 z-[5000] transition-all duration-500 ${
-                isScrolled ? '-translate-y-10' : 'translate-y-0'
-            }`}>
+            <motion.div 
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: isScrolled ? -40 : 0, opacity: 1 }}
+                transition={{ 
+                    type: "spring", 
+                    stiffness: 100, 
+                    damping: 20,
+                    duration: 0.8 
+                }}
+                className="fixed top-0 left-0 right-0 z-[5000]"
+            >
+
                 {/* TOP BAR */}
-                <div className="bg-[#0D0D0D] py-2.5 text-white/90 font-outfit">
+                <div className="bg-[#0D0D0D] py-2.5 text-white/90 font-outfit border-b border-white/5">
                     <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 sm:px-12">
-                        <div className="flex items-center gap-6">
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className="flex items-center gap-6"
+                        >
                             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
                                 <Truck size={14} className="text-[#B8860B]" />
                                 <span className="hidden sm:inline">Livraison Prestige dès 1000 MAD</span>
                             </div>
-                        </div>
-                        <div className="flex items-center gap-6">
+                        </motion.div>
+                        <motion.div 
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className="flex items-center gap-6"
+                        >
+                            <Link href="/track" className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-[#B8860B] transition-colors">
+                                <Package size={14} className="text-[#B8860B]" />
+                                <span className="hidden sm:inline">Suivi de Commande</span>
+                            </Link>
+                            <div className="w-px h-4 bg-white/10" />
                             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
                                 <Phone size={14} className="text-[#B8860B]" />
                                 <span>{settings?.phoneNumber || '+212 5 22 92 36 24'}</span>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
 
@@ -160,50 +186,65 @@ export default function Navbar() {
                     }`}
                 >
                     <div className="mx-auto max-w-[1440px] px-6 sm:px-12 flex items-center justify-between gap-8">
-                        {/* Logo */}
-                        <Link href="/" className="shrink-0 group">
-                            {settings?.logoUrl ? (
-                                <img 
-                                    src={settings.logoUrl} 
-                                    alt={storeName} 
-                                    className={`transition-all duration-500 object-contain ${
-                                        isScrolled ? 'h-10 md:h-12' : 'h-14 md:h-20'
-                                    }`}
-                                />
-                            ) : (
-                                <div className="flex flex-col">
-                                    <span className={`text-2xl font-black tracking-tighter leading-none transition-colors duration-500 ${
-                                        !isScrolled && isHome ? 'text-white' : 'text-slate-900'
-                                    }`}>
-                                        {storeName.split(' ')[0]} <span className="text-[#B8860B]">{storeName.split(' ').slice(1).join(' ')}</span>
-                                    </span>
-                                    <span className={`text-[8px] font-black tracking-[0.5em] uppercase mt-1 transition-colors duration-500 ${
-                                        !isScrolled && isHome ? 'text-white/60' : 'text-slate-300'
-                                    }`}>L'Excellence Lumineuse</span>
-                                </div>
-                            )}
-                        </Link>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
+                        >
+                            <Link href="/" className="shrink-0 group">
+                                {settings?.logoUrl ? (
+                                    <img 
+                                        src={settings.logoUrl} 
+                                        alt={storeName} 
+                                        className={`transition-all duration-500 object-contain ${
+                                            isScrolled ? 'h-10 md:h-12' : 'h-14 md:h-20'
+                                        }`}
+                                    />
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <span className={`text-2xl font-black tracking-tighter leading-none transition-colors duration-500 ${
+                                            !isScrolled && isHome ? 'text-white' : 'text-slate-900'
+                                        }`}>
+                                            {storeName.split(' ')[0]} <span className="text-[#B8860B]">{storeName.split(' ').slice(1).join(' ')}</span>
+                                        </span>
+                                        <span className={`text-[8px] font-black tracking-[0.5em] uppercase mt-1 transition-colors duration-500 ${
+                                            !isScrolled && isHome ? 'text-white/60' : 'text-slate-300'
+                                        }`}>L'Excellence Lumineuse</span>
+                                    </div>
+                                )}
+                            </Link>
+                        </motion.div>
 
                         {/* Navigation Links - Centered */}
                         <div className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-                            {navItems.map((item) => (
-                                <Link
+                            {navItems.map((item, i) => (
+                                <motion.div
                                     key={item.name}
-                                    href={item.href}
-                                    className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all relative py-2 group ${
-                                        pathname === item.href 
-                                        ? 'text-[#B8860B]' 
-                                        : !isScrolled && isHome ? 'text-white/80 hover:text-white' : 'text-slate-400 hover:text-slate-900'
-                                    }`}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
                                 >
-                                    {item.name}
-                                    <span className={`absolute bottom-0 left-0 h-[2px] bg-[#B8860B] transition-all duration-300 ${pathname === item.href ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-                                </Link>
+                                    <Link
+                                        href={item.href}
+                                        className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all relative py-2 group ${
+                                            pathname === item.href 
+                                            ? 'text-[#B8860B]' 
+                                            : !isScrolled && isHome ? 'text-white/80 hover:text-white' : 'text-slate-400 hover:text-slate-900'
+                                        }`}
+                                    >
+                                        {item.name}
+                                        <span className={`absolute bottom-0 left-0 h-[2px] bg-[#B8860B] transition-all duration-300 ${pathname === item.href ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                                    </Link>
+                                </motion.div>
                             ))}
                         </div>
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+                        <motion.div 
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
+                            className="flex items-center gap-4 sm:gap-6 lg:gap-8"
+                        >
                             <button 
                                 onClick={() => setIsSearchOpen(true)}
                                 className={`p-2 transition-all duration-500 hover:scale-110 ${
@@ -292,10 +333,10 @@ export default function Navbar() {
                             >
                                 {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
                             </button>
-                        </div>
+                        </motion.div>
                     </div>
                 </nav>
-            </div>
+            </motion.div>
 
             {/* SMART SEARCH MODAL */}
             <AnimatePresence>
@@ -427,7 +468,7 @@ export default function Navbar() {
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
                                                                             <p className="text-sm font-bold text-slate-800 truncate">{highlightText(product.name, searchQuery)}</p>
-                                                                            <p className="text-xs font-black text-[#B8860B] mt-0.5">{Number(product.price || 0).toFixed(2)} MAD</p>
+                                                                            <p className="text-xs font-black text-[#B8860B] mt-0.5">{api.formatPrice(product.price)} MAD</p>
                                                                         </div>
                                                                     </button>
                                                                 ))}

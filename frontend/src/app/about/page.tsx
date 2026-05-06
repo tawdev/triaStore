@@ -109,7 +109,14 @@ export default function AboutUsPage() {
       </section>
 
       {/* ═══════════ PHILOSOPHY ═══════════ */}
-      <section className="py-32">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32"
+      >
+
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-20 items-center">
             <div className="relative">
@@ -157,10 +164,17 @@ export default function AboutUsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ═══════════ VALUES ═══════════ */}
-      <section className="py-32 bg-slate-50">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32 bg-slate-50"
+      >
+
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-24">
             <h2 className="text-xs font-black text-[#B8860B] uppercase tracking-[0.3em] mb-6">Nos Piliers</h2>
@@ -181,10 +195,17 @@ export default function AboutUsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ═══════════ TIMELINE ═══════════ */}
-      <section className="py-32">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32"
+      >
+
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-24">
             <h2 className="text-5xl font-black text-slate-900 uppercase tracking-tighter">Notre <span className="text-[#B8860B]">Parcours</span></h2>
@@ -207,10 +228,17 @@ export default function AboutUsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ═══════════ EXPERIENCE ═══════════ */}
-      <section className="py-32 bg-slate-900 text-white overflow-hidden">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32 bg-slate-900 text-white overflow-hidden"
+      >
+
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-12">
@@ -245,10 +273,17 @@ export default function AboutUsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ═══════════ CONTACT CARDS ═══════════ */}
-      <section className="py-32">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32"
+      >
+
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-[40px] p-12 border border-slate-50 text-center group hover:border-[#B8860B] transition-all duration-500">
@@ -274,10 +309,17 @@ export default function AboutUsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ═══════════ CTA ═══════════ */}
-      <section className="py-24 bg-[#B8860B] relative overflow-hidden">
+      <motion.section 
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-[#B8860B] relative overflow-hidden"
+      >
+
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-white text-5xl md:text-7xl font-black mb-8 leading-[0.9] uppercase tracking-tighter">
             Prêt à Illuminer <br/>Votre <span className="text-slate-900">Monde</span> ?
@@ -297,7 +339,8 @@ export default function AboutUsPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
+
   );
 }

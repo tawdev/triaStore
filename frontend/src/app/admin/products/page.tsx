@@ -25,7 +25,8 @@ import {
   Heading1,
   Loader2,
   Box,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Star
 } from 'lucide-react';
 
 // ─── Loading skeleton ─────────────────────────────────────────────────────────
@@ -434,7 +435,7 @@ function ProductsContent() {
                             className={`size-8 rounded-full flex items-center justify-center transition-all ${newProduct.imageUrl === url ? 'bg-[#B8860B] text-white' : 'bg-white text-slate-400 hover:text-[#B8860B]'}`}
                             title="Définir comme image principale"
                           >
-                            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                            <Star size={18} className={newProduct.imageUrl === url ? 'fill-white' : 'fill-current'} />
                           </button>
                           <button 
                             type="button" 

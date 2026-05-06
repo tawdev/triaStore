@@ -3,6 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import { api, Review } from '../../lib/api';
 import { useNotification } from '../../context/NotificationContext';
+import { 
+    MessageSquare, 
+    Star, 
+    Hourglass, 
+    CheckCircle2, 
+    XCircle, 
+    Package, 
+    Check, 
+    X, 
+    Ban, 
+    RotateCcw, 
+    Trash2 
+} from 'lucide-react';
 
 export default function AdminReviewsPage() {
     const { showToast } = useNotification();
@@ -49,9 +62,9 @@ export default function AdminReviewsPage() {
     };
 
     const tabs = [
-        { key: 'pending', label: 'En attente', icon: 'hourglass_empty', count: reviews.length },
-        { key: 'approved', label: 'Approuvés', icon: 'check_circle' },
-        { key: 'rejected', label: 'Rejetés', icon: 'cancel' },
+        { key: 'pending', label: 'En attente', icon: <Hourglass size={18} />, count: reviews.length },
+        { key: 'approved', label: 'Approuvés', icon: <CheckCircle2 size={18} /> },
+        { key: 'rejected', label: 'Rejetés', icon: <XCircle size={18} /> },
     ] as const;
 
     if (loading && reviews.length === 0) {
@@ -67,7 +80,7 @@ export default function AdminReviewsPage() {
             <header className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-20">
                 <div>
                     <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary text-[28px]">reviews</span>
+                        <MessageSquare className="text-primary" size={28} />
                         Avis Clients
                     </h1>
                     <p className="text-sm text-slate-500 mt-1 font-medium">
@@ -91,7 +104,7 @@ export default function AdminReviewsPage() {
                                         : 'bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
+                                {tab.icon}
                                 {tab.label}
                                 {activeTab === tab.key && tab.key === 'pending' && reviews.length > 0 && (
                                     <span className="bg-primary text-white px-2 py-0.5 rounded-full text-[10px]">
@@ -110,11 +123,13 @@ export default function AdminReviewsPage() {
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
                                             <h3 className="font-bold text-slate-900 text-lg">{review.name}</h3>
-                                            <div className="flex gap-1">
+                                            <div className="flex gap-0.5">
                                                 {[1, 2, 3, 4, 5].map((s) => (
-                                                    <span key={s} className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1", color: review.rating >= s ? '#FBBF24' : '#E2E8F0' }}>
-                                                        star
-                                                    </span>
+                                                    <Star 
+                                                        key={s} 
+                                                        size={16}
+                                                        className={review.rating >= s ? "fill-amber-400 text-amber-400" : "text-slate-200"}
+                                                    />
                                                 ))}
                                             </div>
                                             <span className="text-[12px] text-slate-400 font-medium">({new Date(review.createdAt).toLocaleDateString('fr-FR')})</span>
@@ -127,7 +142,7 @@ export default function AdminReviewsPage() {
                                                 {review.product?.imageUrl ? (
                                                     <img src={review.product.imageUrl} alt={review.product.name || 'Produit'} className="w-full h-full object-contain p-1" />
                                                 ) : (
-                                                    <span className="material-symbols-outlined text-slate-300 text-[20px]">inventory_2</span>
+                                                    <Package className="text-slate-300" size={20} />
                                                 )}
                                             </div>
                                             <div className="flex flex-col truncate pr-3">
@@ -157,14 +172,14 @@ export default function AdminReviewsPage() {
                                                     className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-sm"
                                                     title="Approuver"
                                                 >
-                                                    <span className="material-symbols-outlined text-[20px]">check</span>
+                                                    <Check size={20} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleUpdateStatus(review.id, 'rejected')}
                                                     className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white flex items-center justify-center transition-all shadow-sm"
                                                     title="Rejeter"
                                                 >
-                                                    <span className="material-symbols-outlined text-[20px]">close</span>
+                                                    <X size={20} />
                                                 </button>
                                             </>
                                         )}
@@ -174,7 +189,7 @@ export default function AdminReviewsPage() {
                                                 className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white flex items-center justify-center transition-all shadow-sm"
                                                 title="Retirer (Rejeter)"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">block</span>
+                                                <Ban size={20} />
                                             </button>
                                         )}
                                         {activeTab === 'rejected' && (
@@ -183,7 +198,7 @@ export default function AdminReviewsPage() {
                                                 className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-sm"
                                                 title="Restaurer (Approuver)"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">settings_backup_restore</span>
+                                                <RotateCcw size={20} />
                                             </button>
                                         )}
                                         <button
@@ -191,7 +206,7 @@ export default function AdminReviewsPage() {
                                             className="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all shadow-sm"
                                             title="Supprimer définitivement"
                                         >
-                                            <span className="material-symbols-outlined text-[20px]">delete_forever</span>
+                                            <Trash2 size={20} />
                                         </button>
                                     </div>
                                 </div>
@@ -200,7 +215,7 @@ export default function AdminReviewsPage() {
                     ) : (
                         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
                             <div className="w-16 h-16 mb-6 text-slate-300 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[64px]">rate_review</span>
+                                <MessageSquare size={64} />
                             </div>
                             <p className="text-[16px] text-slate-500 font-medium font-sans">
                                 {activeTab === 'pending' ? 'Aucun avis en attente de modération.' : `Aucun avis ${activeTab === 'approved' ? 'approuvé' : 'rejeté'}.`}
@@ -212,4 +227,3 @@ export default function AdminReviewsPage() {
         </div>
     );
 }
-

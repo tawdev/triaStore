@@ -133,7 +133,7 @@ function OrderConfirmationContent() {
                                                 <span className="text-[10px] font-black text-[#B8860B] bg-white size-6 rounded-full flex items-center justify-center shadow-sm">{item.quantity}</span>
                                                 <span className="text-sm font-black text-slate-700 uppercase tracking-tight group-hover/item:text-[#B8860B] transition-colors">{item.name}</span>
                                             </div>
-                                            <span className="text-sm font-black text-slate-900">{(item.price * item.quantity).toLocaleString()} <span className="text-[10px]">MAD</span></span>
+                                            <span className="text-sm font-black text-slate-900">{api.formatPrice(item.price * item.quantity)} <span className="text-[10px]">MAD</span></span>
                                         </div>
                                     ))}
                                     <div className="pt-8 mt-8 border-t border-slate-100 flex justify-between items-end">
@@ -142,7 +142,7 @@ function OrderConfirmationContent() {
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Livraison Prestige Incluse</span>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-4xl font-black text-slate-900 tracking-tighter italic">{Number(order.totalPrice).toLocaleString()} <span className="text-lg">MAD</span></span>
+                                            <span className="text-4xl font-black text-slate-900 tracking-tighter italic">{api.formatPrice(order.totalPrice)} <span className="text-lg">MAD</span></span>
                                         </div>
                                     </div>
                                 </div>

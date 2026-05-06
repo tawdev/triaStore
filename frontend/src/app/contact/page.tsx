@@ -253,7 +253,13 @@ export default function ContactPage() {
             </main>
 
             {/* Newsletter / CTA */}
-            <section className="bg-slate-900 py-24 overflow-hidden relative">
+            <motion.section 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="bg-slate-900 py-24 overflow-hidden relative"
+            >
                 <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
                     <Sparkles size={40} className="text-[#B8860B] mx-auto mb-8" />
                     <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8 leading-none">
@@ -267,7 +273,8 @@ export default function ContactPage() {
                         <button className="bg-[#B8860B] text-white px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-[#966d09] transition-all">S'inscrire</button>
                     </div>
                 </div>
-            </section>
+            </motion.section>
         </div>
+
     );
 }

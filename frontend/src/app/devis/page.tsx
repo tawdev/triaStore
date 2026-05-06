@@ -216,8 +216,8 @@ function InvoiceContent() {
                                         <tr key={index} className="border-b border-slate-50 group hover:bg-slate-50 transition-colors">
                                             <td className="py-8 px-4 text-slate-900 font-black uppercase tracking-tight">{item.name}</td>
                                             <td className="py-8 px-4 text-center text-slate-400">{item.quantity}</td>
-                                            <td className="py-8 px-4 text-right">{item.price.toLocaleString()} <span className="text-[10px]">MAD</span></td>
-                                            <td className="py-8 px-4 text-right text-slate-900 font-black">{ (item.price * item.quantity).toLocaleString() } <span className="text-[10px]">MAD</span></td>
+                                            <td className="py-8 px-4 text-right">{api.formatPrice(item.price)} <span className="text-[10px]">MAD</span></td>
+                                            <td className="py-8 px-4 text-right text-slate-900 font-black">{ api.formatPrice(item.price * item.quantity) } <span className="text-[10px]">MAD</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -229,19 +229,19 @@ function InvoiceContent() {
                             <div className="w-full sm:w-1/2 md:w-[400px] space-y-6">
                                 <div className="flex justify-between font-black text-slate-300 uppercase tracking-widest text-[10px] px-4">
                                     <span>Estimation Pièces</span>
-                                    <span className="text-slate-900">{order.totalPrice.toLocaleString()} MAD</span>
+                                    <span className="text-slate-900">{api.formatPrice(order.totalPrice)} MAD</span>
                                 </div>
                                 <div className="flex justify-between font-black text-slate-300 uppercase tracking-widest text-[10px] px-4">
                                     <span>Logistique Spécialisée</span>
                                     <span className={order.totalPrice >= 2000 ? 'text-[#B8860B]' : 'text-slate-900'}>
-                                        {order.totalPrice >= 2000 ? 'OFFERTE' : '250,00 MAD'}
+                                        {order.totalPrice >= 2000 ? 'OFFERTE' : '250.00 MAD'}
                                     </span>
                                 </div>
                                 <div className="p-8 bg-slate-900 rounded-[30px] flex justify-between items-center text-white shadow-2xl shadow-slate-900/10">
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B] mb-2">Total TTC</p>
                                         <p className="text-4xl font-black tracking-tighter">
-                                            {(order.totalPrice + (order.totalPrice >= 2000 ? 0 : 250)).toLocaleString()} <span className="text-lg">MAD</span>
+                                            {api.formatPrice(order.totalPrice + (order.totalPrice >= 2000 ? 0 : 250))} <span className="text-lg">MAD</span>
                                         </p>
                                     </div>
                                     <ShieldCheck className="size-10 text-[#B8860B] opacity-50" />

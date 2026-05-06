@@ -1,5 +1,6 @@
 'use client';
 
+import { Sun, Moon } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
 export function ThemeToggle() {
@@ -22,26 +23,22 @@ export function ThemeToggle() {
       `}
         >
             {/* Sun icon – visible in light mode */}
-            <span
+            <Sun
                 className={`
-          material-symbols-outlined absolute transition-all duration-300
+          absolute transition-all duration-300
           ${isDark ? 'opacity-0 scale-75 rotate-90' : 'opacity-100 scale-100 rotate-0'}
         `}
-                style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}
-            >
-                light_mode
-            </span>
+                size={20}
+            />
 
             {/* Moon icon – visible in dark mode */}
-            <span
+            <Moon
                 className={`
-          material-symbols-outlined absolute transition-all duration-300
+          absolute transition-all duration-300
           ${isDark ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 -rotate-90'}
         `}
-                style={{ fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24" }}
-            >
-                dark_mode
-            </span>
+                size={20}
+            />
         </button>
     );
 }

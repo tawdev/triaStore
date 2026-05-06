@@ -20,11 +20,12 @@ import { useSettings } from '../context/SettingsContext';
 
 export default function Footer() {
     const [mounted, setMounted] = useState(false);
+    const [year, setYear] = useState<number>(2025);
     const { settings } = useSettings();
-    const currentYear = new Date().getFullYear();
 
     useEffect(() => {
         setMounted(true);
+        setYear(new Date().getFullYear());
     }, []);
 
     const scrollToTop = () => {
@@ -156,7 +157,7 @@ export default function Footer() {
                 <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <p className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">
-                            © 2024 <Link href="https://cdigital.ma/" target="_blank" className="text-[#B8860B] hover:opacity-80 transition-opacity">cdigital</Link>. ALL RIGHTS RESERVED.
+                            © {year} <Link href="https://cdigital.ma/" target="_blank" className="text-[#B8860B] hover:opacity-80 transition-opacity">cdigital</Link>. ALL RIGHTS RESERVED.
                         </p>
                         <div className="flex items-center gap-4 text-[8px] font-black text-slate-200 uppercase tracking-[0.2em]">
                             <span>Maroc</span>

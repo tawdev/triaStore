@@ -141,18 +141,31 @@ export default function BlogListingPage() {
 
   return (
     <div className="flex-1 flex flex-col bg-white">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
         <BlogHero search={search} setSearch={setSearch} />
         <BlogTicker />
       </motion.div>
 
+
       {/* Sub-Navbar: Categories & Sort */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-50">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+        className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-50"
+      >
           <div className="mx-auto max-w-[1400px] px-6 lg:px-12 h-20 flex items-center justify-between">
               <div className="flex items-center gap-4 overflow-x-auto custom-scrollbar-hide">
-                  {dynamicCategories.map((cat) => (
-                      <button
+                  {dynamicCategories.map((cat, i) => (
+                      <motion.button
                         key={cat}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.7 + i * 0.05 }}
                         onClick={() => setSelectedCategory(cat)}
                         className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap ${
                             selectedCategory === cat 
@@ -161,7 +174,7 @@ export default function BlogListingPage() {
                         }`}
                       >
                           {cat}
-                      </button>
+                      </motion.button>
                   ))}
               </div>
 
@@ -211,12 +224,17 @@ export default function BlogListingPage() {
                   </div>
               </div>
           </div>
-      </div>
+      </motion.div>
       
       <main className="mx-auto w-full max-w-[1400px] px-6 lg:px-12 py-24">
         {/* Section Title & View Toggles */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
-          <div className="space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-1 bg-[#B8860B]" />
               <span className="text-[11px] font-black uppercase tracking-[0.4em] text-[#B8860B]">Journal de Bord</span>
@@ -232,8 +250,13 @@ export default function BlogListingPage() {
                   Effacer le filtre
                 </button>
             )}
-          </div>
-          <div className="flex gap-4">
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex gap-4"
+          >
             <button
               onClick={() => setViewMode('grid')}
               className={`size-16 flex items-center justify-center rounded-2xl transition-all ${viewMode === 'grid' ? 'bg-slate-900 text-white shadow-2xl scale-110' : 'bg-slate-50 text-slate-300 hover:text-slate-900'}`}
@@ -246,7 +269,7 @@ export default function BlogListingPage() {
             >
               <ListIcon size={24} />
             </button>
-          </div>
+          </motion.div>
         </div>
 
         {/* Content Layout */}
@@ -288,7 +311,13 @@ export default function BlogListingPage() {
             {renderPagination()}
           </div>
 
-          <aside className="lg:w-[400px] shrink-0">
+          <motion.aside 
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="lg:w-[400px] shrink-0"
+          >
             <div className="sticky top-32 space-y-12">
               <BlogListingSidebar 
                 recentPosts={recentPosts} 
@@ -297,7 +326,7 @@ export default function BlogListingPage() {
                 hideTip={true}
               />
             </div>
-          </aside>
+          </motion.aside>
         </div>
       </main>
     </div>

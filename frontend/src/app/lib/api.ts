@@ -280,6 +280,17 @@ export function normalizeImageUrl(url: string | null | undefined): string | null
     return `${base}/${path}`;
 }
 
+/**
+ * Consistently formats price with dot as thousands separator to avoid hydration mismatches.
+ * @example 15000 -> "15.000"
+ */
+export function formatPrice(price: number | string | undefined | null): string {
+    if (price === undefined || price === null) return '0';
+    const num = typeof price === 'string' ? parseFloat(price) : price;
+    if (isNaN(num)) return '0';
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 /** Recursively walk an object and fix any field named imageUrl or logoUrl. */
 function fixImageUrls<T>(data: T): T {
     if (data === null || data === undefined) return data;
@@ -383,6 +394,7 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
 }
 
 export const api = {
+    formatPrice,
     // Products
     getProducts: (query: ProductQuery & { active?: boolean } = {}) => {
         const params = new URLSearchParams();

@@ -1,6 +1,4 @@
-/**
- * Utility to generate WhatsApp order links for Tria Lampe Store
- */
+import { api } from './api';
 
 export interface OrderDetails {
     items: {
@@ -37,15 +35,15 @@ export function generateWhatsAppLink(order: OrderDetails, customNumber?: string)
     const header = "✨ *NOUVELLE RÉSERVATION - TRIA LAMPE*\n_L'Art de la Lumière_\n\n";
 
     const itemsList = order.items
-        .map(item => `💎 *${item.name.toUpperCase()}*\n   Quantité: ${item.quantity}\n   Valeur: ${Number(item.price).toLocaleString()} MAD`)
+        .map(item => `💎 *${item.name.toUpperCase()}*\n   Quantité: ${item.quantity}\n   Valeur: ${api.formatPrice(item.price)} MAD`)
         .join("\n\n");
 
     // Luxury Threshold: 2000 MAD for free delivery
     const deliveryFee = Number(order.totalPrice) >= 2000 ? 0 : 250;
-    const deliveryText = deliveryFee > 0 ? `\n🚚 *LOGISTIQUE SPÉCIALISÉE: ${deliveryFee.toLocaleString()} MAD*` : `\n🚚 *LOGISTIQUE PRESTIGE: OFFERTE*`;
+    const deliveryText = deliveryFee > 0 ? `\n🚚 *LOGISTIQUE SPÉCIALISÉE: ${api.formatPrice(deliveryFee)} MAD*` : `\n🚚 *LOGISTIQUE PRESTIGE: OFFERTE*`;
     const finalTotal = Number(order.totalPrice) + deliveryFee;
 
-    const footer = `${deliveryText}\n💰 *ESTIMATION TOTALE: ${finalTotal.toLocaleString()} MAD*`;
+    const footer = `${deliveryText}\n💰 *ESTIMATION TOTALE: ${api.formatPrice(finalTotal)} MAD*`;
 
     let customerSection = "";
     if (order.customerInfo && (order.customerInfo.name || order.customerInfo.phone || order.customerInfo.address)) {

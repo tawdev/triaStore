@@ -51,6 +51,11 @@ export default function ProductClient({ initialProduct, initialReviews, settings
         address: ''
     });
     const [hasReviewed, setHasReviewed] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -240,7 +245,12 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                 </nav>
 
                 {/* ═══════ PRODUCT MAIN SECTION ═══════ */}
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 mb-20">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col lg:flex-row gap-12 lg:gap-20 mb-20"
+                >
 
                     {/* ── LEFT: Product Image & Gallery ── */}
                     <div className="w-full lg:w-[600px] flex-shrink-0">
@@ -303,11 +313,11 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                             <div className="flex items-center gap-6">
                                 <div className="flex items-baseline gap-4">
                                     <span className="text-4xl font-black text-[#B8860B] tracking-tighter">
-                                        {new Intl.NumberFormat('fr-MA').format(Number(product.price))} <span className="text-sm uppercase ml-1">MAD</span>
+                                        {api.formatPrice(product.price)} <span className="text-sm uppercase ml-1">MAD</span>
                                     </span>
                                     {product.oldPrice && product.oldPrice > product.price && (
                                         <span className="text-xl text-slate-300 line-through font-bold">
-                                            {new Intl.NumberFormat('fr-MA').format(Number(product.oldPrice))} MAD
+                                            {api.formatPrice(product.oldPrice)} MAD
                                         </span>
                                     )}
                                 </div>
@@ -403,10 +413,16 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
-                {/* ═══════ TABS SECTION ═══════ */}
-                <div className="mb-32">
+                {/* ═══════ REVIEWS & DESCRIPTION ═══════ */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="mb-32"
+                >
                     <div className="flex items-center justify-center gap-12 border-b border-slate-100 mb-12">
                         {[
                             { key: 'description' as const, label: 'Description' },
@@ -574,7 +590,7 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                                                     ))}
                                                                 </div>
                                                             </div>
-                                                            <span className="text-[10px] font-bold text-slate-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                                            <span className="text-[10px] font-bold text-slate-400">{mounted ? new Date(review.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : ''}</span>
                                                         </div>
                                                         <p className="text-slate-500 text-sm leading-relaxed">{review.comment}</p>
                                                     </div>
@@ -590,7 +606,7 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                             </motion.div>
                         )}
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Related Products */}
                 <RelatedProducts currentProductId={Number(product.id)} categoryId={product.categoryId} />

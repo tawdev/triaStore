@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { api, type BlogPost, type Tip, type NewsletterSubscriber, type TagCount } from '../../lib/api';
-import { Mail, Quote, Tag, FileText, Check, AlertCircle, Plus, Eye, Trash2, Edit } from 'lucide-react';
+import { Mail, Quote, Tag, FileText, Check, AlertCircle, Plus, Eye, Trash2, Edit, Search, Image, Bold, Italic, List, Link as LinkIcon, X, ChevronDown, Rocket } from 'lucide-react';
 import { useNotification } from '../../context/NotificationContext';
 
 function Skeleton({ className }: { className?: string }) {
@@ -394,7 +394,7 @@ export default function AdminBlogPage() {
                         {/* Filters */}
                         <div className="flex flex-col md:flex-row gap-4 mb-6">
                             <div className="relative flex-1">
-                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                 <input
                                     className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-[14px] font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm"
                                     placeholder="Rechercher par titre ou contenu..."
@@ -432,7 +432,7 @@ export default function AdminBlogPage() {
                                         ) : posts.length === 0 ? (
                                             <tr>
                                                 <td colSpan={6} className="px-8 py-20 text-center text-slate-500">
-                                                    <span className="material-symbols-outlined text-5xl opacity-20">article</span>
+                                                    <FileText className="mx-auto size-12 opacity-20 mb-4" />
                                                     <p className="font-semibold mt-2">Aucun article pour le moment.</p>
                                                 </td>
                                             </tr>
@@ -442,7 +442,7 @@ export default function AdminBlogPage() {
                                                     <td className="px-5 sm:px-8 py-4 sm:py-6">
                                                         <div className="flex items-center gap-3 sm:gap-4">
                                                             <div className="size-10 sm:size-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
-                                                                {post.imageUrl?.trim() ? <img src={post.imageUrl} className="size-full object-contain" alt="" /> : <div className="size-full flex items-center justify-center text-slate-400"><span className="material-symbols-outlined text-[18px] sm:text-[20px]">image</span></div>}
+                                                                {post.imageUrl?.trim() ? <img src={post.imageUrl} className="size-full object-contain" alt="" /> : <div className="size-full flex items-center justify-center text-slate-400"><Image size={20} /></div>}
                                                             </div>
                                                             <div className="max-w-[150px] sm:max-w-[300px]">
                                                                 <p className="text-[13px] sm:text-[14px] font-bold text-slate-900 line-clamp-1" title={post.title}>{post.title}</p>
@@ -684,7 +684,7 @@ export default function AdminBlogPage() {
                                 <p className="text-[13px] text-slate-500 mt-2 font-medium">Structurez votre contenu pour un impact maximal et un meilleur référencement.</p>
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="size-12 flex items-center justify-center rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 transition-all group">
-                                <span className="material-symbols-outlined transition-transform group-hover:rotate-90">close</span>
+                                <X className="transition-transform group-hover:rotate-90" />
                             </button>
                         </div>
 
@@ -718,7 +718,7 @@ export default function AdminBlogPage() {
                                                     className="w-full px-6 py-4.5 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none text-[14px] font-medium transition-all font-mono text-slate-500 shadow-sm"
                                                 />
                                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                                    <span className="material-symbols-outlined text-[18px] text-slate-300">link</span>
+                                                    <LinkIcon size={18} className="text-slate-300" />
                                                 </div>
                                             </div>
                                         </div>
@@ -735,7 +735,7 @@ export default function AdminBlogPage() {
                                     </div>
                                 </div>
 
-                                {/* Section 2: Content */}
+                                 {/* Section 2: Content */}
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 border-b border-slate-100 pb-12">
                                     <div>
                                         <h4 className="text-[15px] font-black text-slate-900 uppercase tracking-wider italic mb-2">2. Contenu Principal</h4>
@@ -744,12 +744,12 @@ export default function AdminBlogPage() {
                                     <div className="lg:col-span-2">
                                         <div className="bg-white border border-slate-200 rounded-[32px] overflow-hidden shadow-sm">
                                             <div className="flex items-center gap-1 border-b border-slate-100 p-2 bg-slate-50/50">
-                                                <button type="button" onClick={() => insertTag('b', 'Texte en gras')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><span className="material-symbols-outlined text-[20px]">format_bold</span></button>
-                                                <button type="button" onClick={() => insertTag('i', 'Texte en italique')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><span className="material-symbols-outlined text-[20px]">format_italic</span></button>
-                                                <button type="button" onClick={() => insertTag('ul', 'Élément de liste')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><span className="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
-                                                <button type="button" onClick={() => insertTag('a', 'Lien')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><span className="material-symbols-outlined text-[20px]">link</span></button>
+                                                <button type="button" onClick={() => insertTag('b', 'Texte en gras')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><Bold size={18} /></button>
+                                                <button type="button" onClick={() => insertTag('i', 'Texte en italique')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><Italic size={18} /></button>
+                                                <button type="button" onClick={() => insertTag('ul', 'Élément de liste')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><List size={18} /></button>
+                                                <button type="button" onClick={() => insertTag('a', 'Lien')} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors"><LinkIcon size={18} /></button>
                                                 <button type="button" onClick={() => editorImageInputRef.current?.click()} className="p-2 hover:bg-white rounded-lg text-slate-500 transition-colors">
-                                                    <span className="material-symbols-outlined text-[20px]">image</span>
+                                                    <Image size={18} />
                                                 </button>
                                                 <input
                                                     type="file"
@@ -800,7 +800,7 @@ export default function AdminBlogPage() {
                                             ) : (
                                                 <div className="text-center p-8">
                                                     <div className="size-20 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-100 shadow-sm group-hover:scale-110 transition-transform">
-                                                        <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-green-500">add_photo_alternate</span>
+                                                        <Image className="size-10 text-slate-300 group-hover:text-green-500" />
                                                     </div>
                                                     <p className="text-[13px] font-black text-slate-400 uppercase tracking-widest">Cliquez ou glissez pour uploader</p>
                                                     <p className="text-[11px] text-slate-400 mt-2 font-medium">Recommandé: 1200x630px (PNG, JPG)</p>
@@ -835,7 +835,7 @@ export default function AdminBlogPage() {
                                                         onClick={() => setForm(prev => ({ ...prev, imageUrl: '' }))}
                                                         className="px-4 py-3 bg-slate-100 text-slate-500 rounded-2xl text-sm font-bold hover:bg-slate-200 transition-all"
                                                     >
-                                                        <span className="material-symbols-outlined text-[18px]">close</span>
+                                                        <X size={18} />
                                                     </button>
                                                 )}
                                             </div>
@@ -863,7 +863,7 @@ export default function AdminBlogPage() {
                                                         <option key={cat.id} value={cat.name}>{cat.name}</option>
                                                     ))}
                                                 </select>
-                                                <span className="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
+                                                <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
@@ -892,7 +892,7 @@ export default function AdminBlogPage() {
                                                                 onClick={() => setForm({ ...form, tags: form.tags.filter(t => t !== tag) })}
                                                                 className="hover:scale-125 transition-transform"
                                                             >
-                                                                <span className="material-symbols-outlined text-[14px]">close</span>
+                                                                <X size={14} />
                                                             </button>
                                                         </span>
                                                     ))}
@@ -964,7 +964,7 @@ export default function AdminBlogPage() {
                                 className="flex-1 py-4.5 bg-primary text-white rounded-2xl text-[14px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3 group"
                             >
                                 {isSubmitting ? 'Enregistrement...' : (editingPost ? 'Mettre à jour l\'Article' : 'Publier Maintenant')}
-                                {!isSubmitting && <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">rocket_launch</span>}
+                                {!isSubmitting && <Rocket className="size-5 transition-transform group-hover:translate-x-1" />}
                             </button>
                         </div>
                     </div>
@@ -981,7 +981,7 @@ export default function AdminBlogPage() {
                                 {editingTip ? 'Modifier l\'Astuce' : 'Nouvelle Astuce Expert'}
                             </h3>
                             <button onClick={() => setIsTipModalOpen(false)} className="size-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors">
-                                <span className="material-symbols-outlined">close</span>
+                                <X size={20} />
                             </button>
                         </div>
                         <form onSubmit={handleTipSubmit} className="p-8 space-y-6">

@@ -162,7 +162,7 @@ export default function ComparePage() {
 
                                                         <div className="mt-auto space-y-6">
                                                             <div className="text-2xl font-black text-slate-900 tracking-tighter">
-                                                                {Number(product.price).toLocaleString()} <span className="text-[10px]">MAD</span>
+                                                                {api.formatPrice(product.price)} <span className="text-[10px]">MAD</span>
                                                             </div>
 
                                                             <button 

@@ -100,32 +100,96 @@ export default function HomeClient({
       {/* HERO SECTION */}
       <section className="relative h-[700px] lg:h-[800px] overflow-hidden">
         {/* Optimized Hero Image */}
-        <Image 
-          src={heroBackground} 
-          alt="Lustre Cristal Luxe" 
-          fill 
-          priority 
-          quality={100}
-          className="object-cover object-center scale-105"
-        />
+        <motion.div 
+            initial={{ scale: 1.15, opacity: 0 }}
+            animate={{ scale: 1.05, opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 z-0"
+        >
+            <Image 
+                src={heroBackground} 
+                alt="Lustre Cristal Luxe" 
+                fill 
+                priority 
+                quality={100}
+                className="object-cover object-center"
+            />
+        </motion.div>
         <div className="absolute inset-0 bg-black/40 z-0" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent z-0" />
 
         <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-12 h-full flex flex-col justify-center relative z-10 pt-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-16">
             <div className="text-white space-y-8">
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                <span className="inline-block px-4 py-1 bg-[#B8860B] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-sm mb-6">Collection Exclusive 2026</span>
-                <h1 className="text-6xl md:text-[85px] font-bold leading-[1.05] mb-8 drop-shadow-2xl">Éclairez <br /><span className="text-[#B8860B] italic font-playfair font-light">votre intérieur</span> <br />avec <span className="text-[#B8860B] italic font-playfair font-light">élégance</span></h1>
-                <p className="text-xl text-white/80 max-w-lg leading-relaxed font-medium mb-12">Découvrez notre collection de lampes design pour sublimer chaque espace de votre maison.</p>
-                <Link href="/products" className="inline-flex px-12 py-5 bg-[#C18E2E] text-white rounded-md font-black uppercase tracking-widest text-[11px] hover:bg-white hover:text-black transition-all">Découvrir la collection</Link>
-              </motion.div>
+              <div className="flex flex-col">
+                <motion.span 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                    className="inline-block px-4 py-1 bg-[#B8860B] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-sm mb-6 w-fit"
+                >
+                    Collection Exclusive 2026
+                </motion.span>
+                
+                <h1 className="text-6xl md:text-[85px] font-bold leading-[1.05] mb-8 drop-shadow-2xl">
+                    <motion.span 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.8 }}
+                        className="block"
+                    >
+                        Éclairez
+                    </motion.span>
+                    <motion.span 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.9, duration: 0.8 }}
+                        className="text-[#B8860B] italic font-playfair font-light block"
+                    >
+                        votre intérieur
+                    </motion.span>
+                    <motion.span 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.1, duration: 0.8 }}
+                        className="block"
+                    >
+                        avec <span className="text-[#B8860B] italic font-playfair font-light">élégance</span>
+                    </motion.span>
+                </h1>
+
+                <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.4, duration: 1 }}
+                    className="text-xl text-white/80 max-w-lg leading-relaxed font-medium mb-12"
+                >
+                    Découvrez notre collection de lampes design pour sublimer chaque espace de votre maison.
+                </motion.p>
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.7, duration: 0.5 }}
+                >
+                    <Link href="/products" className="inline-flex px-12 py-5 bg-[#C18E2E] text-white rounded-md font-black uppercase tracking-widest text-[11px] hover:bg-white hover:text-black transition-all shadow-xl shadow-black/20">
+                        Découvrir la collection
+                    </Link>
+                </motion.div>
+              </div>
             </div>
           </div>
         </div>
       </section>
       {/* TRUST BADGES SECTION */}
-      <section className="relative z-20 -mt-12 lg:-mt-16 px-6 sm:px-12">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative z-20 -mt-12 lg:-mt-16 px-6 sm:px-12"
+      >
+
         <div className="mx-auto max-w-[1440px]">
           <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-50 p-8 lg:p-12 flex flex-wrap justify-between gap-12 lg:gap-8">
             <div className="flex items-center gap-5 group">
@@ -179,10 +243,17 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* BRANDS SECTION */}
-      <section className="py-16 bg-white border-y border-slate-50 overflow-hidden">
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
+        className="py-16 bg-white border-y border-slate-50 overflow-hidden"
+      >
+
         <div className="mx-auto max-w-[1440px]">
           <div className="relative flex overflow-x-hidden">
             <div className="flex animate-marquee whitespace-nowrap items-center gap-16 lg:gap-24 py-2">
@@ -210,10 +281,17 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CATEGORIES SECTION */}
-      <section className="py-24 bg-white">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="flex justify-between items-end mb-12">
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">Catégories Vedettes</h2>
@@ -234,10 +312,17 @@ export default function HomeClient({
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* MEILLEURES VENTES */}
-      <section className="py-24 bg-slate-50/50">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-slate-50/50"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
@@ -264,17 +349,24 @@ export default function HomeClient({
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {isLoadingFeatured ? (
-                Array(12).fill(0).map((_, i) => (
-                  <div key={i} className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]">
-                    <ProductSkeleton />
-                  </div>
-                ))
+                    Array(12).fill(0).map((_, i) => (
+                        <div key={i} className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]">
+                            <ProductSkeleton />
+                        </div>
+                    ))
                 ) : (
-                featuredProducts.slice(0, 12).map((product) => (
-                  <div key={product.id} className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]">
-                    <ProductCard product={product} />
-                  </div>
-                ))
+                    featuredProducts.slice(0, 12).map((product, idx) => (
+                        <motion.div 
+                            key={product.id} 
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1, duration: 0.5 }}
+                            className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]"
+                        >
+                            <ProductCard product={product} />
+                        </motion.div>
+                    ))
                 )}
             </div>
 
@@ -299,10 +391,17 @@ export default function HomeClient({
             </button>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* PROMO BANNERS */}
-      <section className="py-24 bg-white">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative h-[320px] rounded-[30px] overflow-hidden group">
@@ -327,10 +426,17 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* NOUVEAUTÉS */}
-      <section className="py-24 bg-white">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="flex justify-between items-end mb-12">
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">Nouveautés</h2>
@@ -343,10 +449,17 @@ export default function HomeClient({
               className="flex overflow-x-auto gap-6 scroll-smooth no-scrollbar pb-8 px-2"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {initialNewProducts.slice(0, 10).map((product) => (
-                    <div key={product.id} className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]">
+                {initialNewProducts.slice(0, 10).map((product, idx) => (
+                    <motion.div 
+                        key={product.id} 
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.1, duration: 0.5 }}
+                        className="min-w-[280px] md:min-w-[240px] lg:min-w-[calc((100%-120px)/6)]"
+                    >
                       <ProductCard product={product} />
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
@@ -371,10 +484,17 @@ export default function HomeClient({
             </button>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* WHY CHOOSE US SECTION */}
-      <section className="py-24 bg-white">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="bg-white rounded-[40px] border border-slate-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
             {/* Left Brand Block */}
@@ -431,10 +551,17 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* TESTIMONIALS SECTION - REFINED AS PER IMAGE */}
-      <section className="py-32 bg-white">
+      {/* TESTIMONIALS SECTION */}
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-32 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="flex items-center justify-center gap-6 mb-24">
             <div className="w-16 h-px bg-[#B8860B]/30" />
@@ -505,10 +632,17 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* NEWSLETTER BANNER - REFINED WITH ROBUST IMAGE DISPLAY */}
-      <section className="py-24 bg-white">
+      {/* NEWSLETTER BANNER */}
+      <motion.section 
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="py-24 bg-white"
+      >
+
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
           <div className="bg-[#111] rounded-[40px] overflow-hidden flex flex-col md:flex-row min-h-[400px]">
             {/* Left Content */}
@@ -540,8 +674,9 @@ export default function HomeClient({
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
     </div>
+
   );
 }

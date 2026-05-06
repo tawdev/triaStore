@@ -14,6 +14,17 @@ import {
     ReferenceLine
 } from 'recharts';
 import { api, type AnalyticsData } from '../../lib/api';
+import { 
+    Calendar, 
+    Banknote, 
+    BarChart3, 
+    ShoppingCart, 
+    Clock, 
+    Package, 
+    X, 
+    Plus, 
+    RefreshCw 
+} from 'lucide-react';
 
 function Skeleton({ className }: { className?: string }) {
     return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />;
@@ -108,7 +119,7 @@ export default function AdminAnalyticsPage() {
                 <header className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                     <div>
                         <h2 className="text-[32px] font-black text-slate-900 leading-tight">Analytics Overview</h2>
-                        <p className="text-slate-400 font-bold mt-1">Métriques de performance en temps réel pour votre animalerie.</p>
+                        <p className="text-slate-400 font-bold mt-1">Métriques de performance en temps réel pour votre boutique de luxe.</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
                         {['Last 30 Days', 'Last 90 Days', 'Year to Date'].map(range => (
@@ -125,7 +136,7 @@ export default function AdminAnalyticsPage() {
                             onClick={() => setActiveRange('Custom')}
                             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all ${activeRange === 'Custom' ? 'bg-slate-50 text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                         >
-                            <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+                            <Calendar size={18} />
                             <span className="text-[13px] font-extrabold uppercase tracking-tight">Custom Range</span>
                         </button>
                     </div>
@@ -177,23 +188,28 @@ export default function AdminAnalyticsPage() {
                         {/* KPI Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {[
-                                { label: 'Total Revenue', value: `${data.kpis.totalRevenue.toLocaleString()}`, suffix: 'MAD', trend: data.kpis.revenueTrend, trendText: `Vs previous ${activeRange}`, icon: 'payments', iconClass: 'text-emerald-500', bgClass: 'bg-emerald-50' },
-                                { label: 'Avg. Order Value', value: `${data.kpis.avgOrderValue.toFixed(2)}`, suffix: 'MAD', trend: data.kpis.orderTrend, trendText: 'Vs previous period', icon: 'analytics', iconClass: 'text-blue-500', bgClass: 'bg-blue-50' },
-                                { label: 'Total Orders', value: `${data.kpis.totalOrders.toLocaleString()}`, suffix: 'Orders', trend: data.kpis.totalOrdersTrend, trendText: `Vs previous ${activeRange}`, icon: 'shopping_cart', iconClass: 'text-purple-500', bgClass: 'bg-purple-50' },
-                                { label: 'Pending Orders', value: data.kpis.pendingOrders.toLocaleString(), suffix: 'Orders', trend: data.kpis.pendingTrend, trendText: 'Vs end of prev period', icon: 'pending_actions', iconClass: 'text-orange-500', bgClass: 'bg-orange-50' },
+                                { label: 'Total Revenue', value: `${data.kpis.totalRevenue.toLocaleString()}`, suffix: 'MAD', trend: data.kpis.revenueTrend, trendText: `Vs previous ${activeRange}`, icon: Banknote, iconClass: 'text-emerald-500', bgClass: 'bg-emerald-50' },
+                                { label: 'Avg. Order Value', value: `${data.kpis.avgOrderValue.toFixed(2)}`, suffix: 'MAD', trend: data.kpis.orderTrend, trendText: 'Vs previous period', icon: BarChart3, iconClass: 'text-blue-500', bgClass: 'bg-blue-50' },
+                                { label: 'Total Orders', value: `${data.kpis.totalOrders.toLocaleString()}`, suffix: 'Orders', trend: data.kpis.totalOrdersTrend, trendText: `Vs previous ${activeRange}`, icon: ShoppingCart, iconClass: 'text-purple-500', bgClass: 'bg-purple-50' },
+                                { label: 'Pending Orders', value: data.kpis.pendingOrders.toLocaleString(), suffix: 'Orders', trend: data.kpis.pendingTrend, trendText: 'Vs end of prev period', icon: Clock, iconClass: 'text-orange-500', bgClass: 'bg-orange-50' },
                             ].map((card, i) => (
                                 <div key={i} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
                                     <div className="flex items-center justify-between mb-6">
                                         <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">{card.label}</span>
-                                        <div className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center gap-0.5 ${card.trend >= 0 ? 'bg-emerald-100/50 text-emerald-600' : 'bg-rose-100/50 text-rose-600'}`}>
-                                            {card.trend >= 0 ? '+' : ''}{card.trend.toFixed(1)}%
+                                        <div className={`size-10 rounded-xl flex items-center justify-center ${card.bgClass} ${card.iconClass}`}>
+                                            <card.icon size={20} />
                                         </div>
                                     </div>
                                     <div className="flex items-baseline gap-1 mb-2">
                                         <span className="text-[28px] font-black text-slate-900 tracking-tight">{card.value}</span>
                                         <span className="text-xs font-bold text-slate-400 ml-1">{card.suffix}</span>
                                     </div>
-                                    {card.trendText && <p className="text-[11px] font-bold text-slate-400/80 mb-2">{card.trendText}</p>}
+                                    <div className="flex items-center justify-between">
+                                        {card.trendText && <p className="text-[11px] font-bold text-slate-400/80">{card.trendText}</p>}
+                                        <div className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center gap-0.5 ${card.trend >= 0 ? 'bg-emerald-100/50 text-emerald-600' : 'bg-rose-100/50 text-rose-600'}`}>
+                                            {card.trend >= 0 ? '+' : ''}{card.trend.toFixed(1)}%
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -320,7 +336,7 @@ export default function AdminAnalyticsPage() {
                                                         <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
-                                                            <span className="material-symbols-outlined text-[18px]">package_2</span>
+                                                            <Package size={20} />
                                                         </div>
                                                     )}
                                                 </div>
@@ -382,9 +398,9 @@ export default function AdminAnalyticsPage() {
                 ) : data && data.kpis.totalProducts === 0 ? (
                     <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] animate-in fade-in slide-in-from-top-4 duration-500">
                         <div className="size-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 relative">
-                            <span className="material-symbols-outlined text-[48px] text-slate-300">inventory_2</span>
+                            <Package size={48} className="text-slate-300" />
                             <div className="absolute -top-1 -right-1 size-6 bg-[#1A5319] rounded-full flex items-center justify-center border-4 border-white">
-                                <span className="material-symbols-outlined text-[12px] text-white font-black">close</span>
+                                <X size={12} className="text-white font-black" />
                             </div>
                         </div>
                         <h3 className="text-2xl font-black text-slate-900 mb-3">No Inventory Data Found</h3>
@@ -396,14 +412,14 @@ export default function AdminAnalyticsPage() {
                                 href="/admin/products"
                                 className="px-10 py-4 bg-[#1A5319] text-white text-[13px] font-black rounded-2xl hover:bg-[#004d26] transition-all transform hover:-translate-y-1 active:scale-95 shadow-xl shadow-[#1A5319]/20 flex items-center gap-2 uppercase tracking-widest"
                             >
-                                <span className="material-symbols-outlined text-[18px]">add</span>
+                                <Plus size={18} />
                                 Add First Product
                             </a>
                             <button
                                 onClick={loadAnalytics}
                                 className="px-10 py-4 bg-white text-slate-600 text-[13px] font-black rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2 uppercase tracking-widest"
                             >
-                                <span className="material-symbols-outlined text-[18px]">refresh</span>
+                                <RefreshCw size={18} />
                                 Refresh Page
                             </button>
                         </div>
