@@ -16,11 +16,12 @@ import {
     Phone,
     Truck
 } from 'lucide-react';
-import { api, type Category } from '../lib/api';
+import { api, type Category, type Product } from '../lib/api';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useSettings } from '../context/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { normalizeImageUrl } from '../lib/api';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -35,8 +36,15 @@ export default function Navbar() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [mounted, setMounted] = useState(false);
+    const [searchResults, setSearchResults] = useState<{ categories: Category[]; products: Product[] }>({ categories: [], products: [] });
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
     
     const menuRef = useRef<HTMLDivElement>(null);
+    const searchRef = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isHome = pathname === '/';
 
     useEffect(() => {
@@ -50,6 +58,9 @@ export default function Navbar() {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setIsMenuOpen(false);
             }
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setIsSearchOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         
@@ -58,6 +69,43 @@ export default function Navbar() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // Live search with debounce
+    useEffect(() => {
+        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (!searchQuery.trim()) {
+            setSearchResults({ categories: [], products: [] });
+            return;
+        }
+        setSearchLoading(true);
+        searchTimeout.current = setTimeout(async () => {
+            try {
+                const q = searchQuery.toLowerCase();
+                const [productsRes] = await Promise.all([
+                    api.getProducts({ search: searchQuery, limit: 5 }),
+                ]);
+                const matchedCats = categories.filter(c => c.name.toLowerCase().includes(q)).slice(0, 3);
+                setSearchResults({ categories: matchedCats, products: productsRes.data });
+            } catch {
+                setSearchResults({ categories: [], products: [] });
+            } finally {
+                setSearchLoading(false);
+            }
+        }, 300);
+    }, [searchQuery, categories]);
+
+    const highlightText = (text: string, query: string) => {
+        if (!query.trim()) return <span>{text}</span>;
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        const parts = text.split(regex);
+        return (
+            <span>
+                {parts.map((part, i) =>
+                    regex.test(part) ? <span key={i} className="text-[#B8860B] font-black">{part}</span> : part
+                )}
+            </span>
+        );
+    };
 
     const navItems = [
         { name: 'Collections', href: '/products' },
@@ -69,8 +117,11 @@ export default function Navbar() {
     const handleSearch = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!searchQuery.trim()) return;
+        const params = new URLSearchParams({ search: searchQuery.trim() });
+        if (selectedCategory !== 'all') params.set('categoryId', selectedCategory);
         setIsSearchOpen(false);
-        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchQuery('');
+        router.push(`/products?${params.toString()}`);
     };
 
     if (!mounted) return null;
@@ -246,27 +297,157 @@ export default function Navbar() {
                 </nav>
             </div>
 
-            {/* FULLSCREEN SEARCH */}
+            {/* SMART SEARCH MODAL */}
             <AnimatePresence>
                 {isSearchOpen && (
-                    <motion.div 
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[10000] bg-slate-900/98 backdrop-blur-3xl flex flex-col items-center justify-center p-6"
-                    >
-                        <button onClick={() => setIsSearchOpen(false)} className="absolute top-12 right-12 text-white/40 hover:text-white transition-colors p-4">
-                            <X size={40} strokeWidth={1} />
-                        </button>
-                        <div className="w-full max-w-4xl text-center space-y-12">
-                            <h2 className="text-white text-5xl md:text-7xl font-black tracking-tighter uppercase italic">Que cherchez-vous ?</h2>
-                            <form onSubmit={handleSearch} className="relative">
-                                <input autoFocus type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Un lustre, une lampe..." className="w-full bg-transparent border-b-2 border-white/10 py-10 text-4xl md:text-6xl font-black text-white outline-none placeholder:text-white/5 focus:border-[#B8860B] transition-all text-center" />
-                                <button type="submit" className="mt-12 text-[10px] font-black text-[#B8860B] uppercase tracking-[0.5em] hover:text-white transition-colors">Explorer la collection <ArrowRight className="inline-block ml-4" /></button>
-                            </form>
-                        </div>
-                    </motion.div>
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
+                            className="fixed inset-0 z-[9999] bg-slate-900/70 backdrop-blur-sm"
+                        />
+
+                        {/* Search Card */}
+                        <motion.div
+                            initial={{ opacity: 0, y: -30, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.97 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            className="fixed top-[80px] left-1/2 -translate-x-1/2 z-[10000] w-full max-w-[720px] px-4"
+                            ref={searchRef}
+                        >
+                            <div className="bg-white rounded-[28px] shadow-[0_40px_80px_-12px_rgba(0,0,0,0.3)] overflow-hidden">
+                                {/* Input Row */}
+                                <form onSubmit={handleSearch} className="flex items-center gap-0">
+                                    <div className="flex-1 flex items-center gap-3 px-6 py-4">
+                                        <Search size={18} className="text-slate-300 shrink-0" />
+                                        <input
+                                            ref={searchInputRef}
+                                            autoFocus
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Rechercher un luminaire, un lustre..."
+                                            className="flex-1 text-base font-medium text-slate-800 outline-none placeholder:text-slate-300 bg-transparent"
+                                        />
+                                        {searchQuery && (
+                                            <button type="button" onClick={() => setSearchQuery('')} className="size-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
+                                                <X size={12} />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="w-px h-8 bg-slate-100 shrink-0" />
+
+                                    {/* Category Filter */}
+                                    <div className="relative px-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                                            className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap"
+                                        >
+                                            <span>{selectedCategory === 'all' ? 'Toutes Les Catégories' : categories.find(c => c.id.toString() === selectedCategory)?.name || 'Catégorie'}</span>
+                                            <ChevronDown size={13} className={`transition-transform ${showCategoryDropdown ? 'rotate-180 text-[#B8860B]' : ''}`} />
+                                        </button>
+                                        <AnimatePresence>
+                                            {showCategoryDropdown && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 8 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 8 }}
+                                                    className="absolute top-full right-0 mt-3 bg-white border border-slate-100 rounded-2xl shadow-2xl py-2 z-10 min-w-[200px]"
+                                                >
+                                                    <button type="button" onClick={() => { setSelectedCategory('all'); setShowCategoryDropdown(false); }} className={`w-full text-left px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors ${selectedCategory === 'all' ? 'text-[#B8860B]' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
+                                                        Toutes Les Catégories
+                                                    </button>
+                                                    {categories.map(c => (
+                                                        <button type="button" key={c.id} onClick={() => { setSelectedCategory(c.id.toString()); setShowCategoryDropdown(false); }} className={`w-full text-left px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors ${selectedCategory === c.id.toString() ? 'text-[#B8860B]' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
+                                                            {c.name}
+                                                        </button>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+
+                                    {/* Search Button */}
+                                    <button type="submit" className="m-3 size-10 rounded-xl bg-[#B8860B] text-white flex items-center justify-center hover:bg-[#9a7009] transition-colors shadow-md shrink-0">
+                                        <Search size={16} />
+                                    </button>
+                                </form>
+
+                                {/* Results */}
+                                <AnimatePresence>
+                                    {searchQuery.trim() && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="border-t border-slate-50 max-h-[55vh] overflow-y-auto"
+                                        >
+                                            {searchLoading ? (
+                                                <div className="p-6 text-center text-xs font-bold text-slate-300 uppercase tracking-widest">Recherche en cours...</div>
+                                            ) : (
+                                                <>
+                                                    {/* Category Suggestions */}
+                                                    {searchResults.categories.length > 0 && (
+                                                        <div className="px-6 pt-5 pb-3">
+                                                            <div className="flex items-center gap-3 mb-3">
+                                                                <div className="w-1 h-4 bg-[#B8860B] rounded-full" />
+                                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Suggestions de Catégories</p>
+                                                            </div>
+                                                            {searchResults.categories.map(cat => (
+                                                                <button key={cat.id} type="button" onClick={() => { router.push(`/products?categoryId=${cat.id}`); setIsSearchOpen(false); setSearchQuery(''); }} className="block w-full text-left px-3 py-2.5 text-sm font-bold text-slate-600 hover:text-[#B8860B] transition-colors rounded-xl hover:bg-slate-50">
+                                                                    {highlightText(cat.name, searchQuery)}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Product Suggestions */}
+                                                    {searchResults.products.length > 0 && (
+                                                        <div className={`px-6 pt-3 pb-5 ${searchResults.categories.length > 0 ? 'border-t border-slate-50' : ''}`}>
+                                                            <div className="flex items-center gap-3 mb-3">
+                                                                <div className="w-1 h-4 bg-[#B8860B] rounded-full" />
+                                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Suggestions de Produits</p>
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                {searchResults.products.map(product => (
+                                                                    <button key={product.id} type="button" onClick={() => { router.push(`/products/${product.id}`); setIsSearchOpen(false); setSearchQuery(''); }} className="flex items-center gap-4 w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors group">
+                                                                        <div className="size-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
+                                                                            {product.imageUrl ? (
+                                                                                <img src={normalizeImageUrl(product.imageUrl) || ''} alt={product.name} className="w-full h-full object-cover" />
+                                                                            ) : (
+                                                                                <div className="w-full h-full flex items-center justify-center text-slate-200"><Sparkles size={16} /></div>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <p className="text-sm font-bold text-slate-800 truncate">{highlightText(product.name, searchQuery)}</p>
+                                                                            <p className="text-xs font-black text-[#B8860B] mt-0.5">{Number(product.price || 0).toFixed(2)} MAD</p>
+                                                                        </div>
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {searchResults.categories.length === 0 && searchResults.products.length === 0 && !searchLoading && (
+                                                        <div className="p-8 text-center text-xs font-bold text-slate-300 uppercase tracking-widest">Aucun résultat pour "{searchQuery}"</div>
+                                                    )}
+                                                </>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
-
             {/* MOBILE MENU */}
             <AnimatePresence>
                 {isMenuOpen && (

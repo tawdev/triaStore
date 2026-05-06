@@ -20,7 +20,7 @@ export class BlogPost {
     @Column({ nullable: true })
     excerpt: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true })
     imageUrl: string;
 
     @Column({ default: 'Draft' }) // Draft, Published

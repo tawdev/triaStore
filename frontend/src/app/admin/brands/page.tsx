@@ -3,6 +3,16 @@
 import { useEffect, useState } from 'react';
 import { api, normalizeImageUrl, type Brand } from '../../lib/api';
 import { useNotification } from '../../context/NotificationContext';
+import { 
+    Plus, 
+    Upload, 
+    Link as LinkIcon, 
+    Edit2, 
+    Trash2, 
+    BadgeCheck,
+    Loader2,
+    Image as ImageIcon
+} from 'lucide-react';
 
 export default function AdminBrandsPage() {
     const { showToast, showConfirm } = useNotification();
@@ -104,57 +114,57 @@ export default function AdminBrandsPage() {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Gestion des Marques</h1>
-                    <p className="text-sm text-slate-500 mt-1">{brands.length} marque(s) enregistrée(s)</p>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Gestion des Marques</h1>
+                    <p className="text-sm font-medium text-slate-500 mt-1">{brands.length} marque(s) enregistrée(s)</p>
                 </div>
                 <button
                     onClick={() => { resetForm(); setShowForm(true); }}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg font-semibold text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-xl shadow-slate-900/10 hover:opacity-90 transition-all"
                 >
-                    <span className="material-symbols-outlined text-[20px]">add</span>
+                    <Plus size={18} />
                     Nouvelle Marque
                 </button>
             </div>
 
             {/* Add/Edit Form */}
             {showForm && (
-                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
-                    <h2 className="text-lg font-bold text-slate-800 mb-4">
+                <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 mb-8">
+                    <h2 className="text-lg font-black text-slate-900 mb-6 uppercase tracking-tight">
                         {editingBrand ? 'Modifier la Marque' : 'Ajouter une Marque'}
                     </h2>
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom de la marque</label>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="max-w-md">
+                            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Nom de la marque</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                placeholder="Ex: Bosch, Makita..."
-                                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                placeholder="Ex: Artemis Design, Crystal & Co..."
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[14px] font-medium focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-200 transition-all"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Logo</label>
-                            <div className="space-y-3">
+                            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Logo</label>
+                            <div className="space-y-4">
                                 {/* Upload file */}
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-6">
                                     {formData.logoUrl?.trim() && (
-                                        <div className="w-20 h-20 rounded-lg border border-slate-200 overflow-hidden bg-white flex items-center justify-center p-2">
+                                        <div className="w-24 h-24 rounded-2xl border border-slate-100 overflow-hidden bg-white flex items-center justify-center p-3 shadow-sm">
                                             <img
-                                                src={normalizeImageUrl(formData.logoUrl) || formData.logoUrl}
-                                                alt="Logo preview"
-                                                className="max-w-full max-h-full object-contain"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/f8fafc/cbd5e1?text=Logo+invalide';
-                                                }}
-                                            />
+                                                 src={normalizeImageUrl(formData.logoUrl) || ''}
+                                                 alt="Logo preview"
+                                                 className="max-w-full max-h-full object-contain"
+                                                 onError={(e) => {
+                                                     (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/f8fafc/cbd5e1?text=Logo+invalide';
+                                                 }}
+                                             />
                                         </div>
                                     )}
-                                    <label className="cursor-pointer flex items-center gap-2 px-4 py-2.5 border border-dashed border-slate-300 rounded-lg text-sm text-slate-600 hover:border-primary hover:text-primary transition-colors">
-                                        <span className="material-symbols-outlined text-[20px]">upload</span>
-                                        {uploading ? 'Uploading...' : 'Choisir un fichier'}
+                                    <label className="cursor-pointer group flex flex-col items-center justify-center size-24 border-2 border-dashed border-slate-200 rounded-2xl hover:border-slate-400 hover:bg-slate-50 transition-all text-slate-400 hover:text-slate-900">
+                                        {uploading ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}
+                                        <span className="text-[10px] font-black uppercase tracking-widest mt-2">{uploading ? '...' : 'Upload'}</span>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -163,48 +173,48 @@ export default function AdminBrandsPage() {
                                         />
                                     </label>
                                 </div>
-                                <div className="flex items-center gap-3">
+
+                                <div className="flex items-center gap-4 max-w-xl">
                                     <div className="flex-1 h-px bg-slate-100" />
                                     <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">ou URL directe</span>
                                     <div className="flex-1 h-px bg-slate-100" />
                                 </div>
-                                <div className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
-                                        <span className="material-symbols-outlined text-[20px]">link</span>
-                                    </div>
+
+                                <div className="relative group max-w-xl">
+                                    <LinkIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-slate-900 transition-colors" />
                                     <input
                                         type="url"
                                         value={formData.logoUrl.startsWith('http') ? formData.logoUrl : ''}
                                         onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
                                         placeholder="Collez l'URL du logo ici..."
-                                        className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-[14px] font-medium focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-200 transition-all"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3 bg-slate-50 w-fit px-4 py-2 rounded-xl border border-slate-100">
                             <input
                                 type="checkbox"
                                 id="isActive"
                                 checked={formData.isActive}
                                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                className="rounded border-slate-300"
+                                className="size-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 transition-all"
                             />
-                            <label htmlFor="isActive" className="text-sm font-medium text-slate-700">Active (visible sur le site)</label>
+                            <label htmlFor="isActive" className="text-xs font-bold text-slate-700 cursor-pointer">Active (visible sur le site)</label>
                         </div>
 
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-4 pt-4">
                             <button
                                 type="submit"
-                                className="px-6 py-2.5 bg-primary text-white rounded-lg font-semibold text-sm hover:opacity-90 transition-all"
+                                className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all shadow-xl shadow-slate-900/10"
                             >
                                 {editingBrand ? 'Mettre à jour' : 'Ajouter'}
                             </button>
                             <button
                                 type="button"
                                 onClick={resetForm}
-                                className="px-6 py-2.5 bg-slate-100 text-slate-700 rounded-lg font-semibold text-sm hover:bg-slate-200 transition-all"
+                                className="px-8 py-3 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
                             >
                                 Annuler
                             </button>
@@ -215,75 +225,77 @@ export default function AdminBrandsPage() {
 
             {/* Brands Table */}
             {loading ? (
-                <div className="flex items-center justify-center py-20">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <div className="flex items-center justify-center py-32">
+                    <Loader2 size={40} className="animate-spin text-slate-200" />
                 </div>
             ) : brands.length === 0 ? (
-                <div className="text-center py-20 text-slate-400">
-                    <span className="material-symbols-outlined text-5xl mb-2">verified</span>
-                    <p className="text-lg font-medium">Aucune marque enregistrée</p>
-                    <p className="text-sm">Commencez par ajouter une marque.</p>
+                <div className="flex flex-col items-center justify-center py-32 text-center">
+                    <div className="size-20 rounded-3xl bg-slate-50 flex items-center justify-center mb-6">
+                        <BadgeCheck size={40} className="text-slate-200" />
+                    </div>
+                    <p className="text-lg font-black text-slate-900 tracking-tight">Aucune marque enregistrée</p>
+                    <p className="text-sm font-medium text-slate-400 mt-1">Commencez par ajouter votre première marque partenaire.</p>
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+                <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                     <table className="w-full">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                                <th className="text-left px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Logo</th>
-                                <th className="text-left px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Nom</th>
-                                <th className="text-left px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Statut</th>
-                                <th className="text-right px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                            <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <th className="text-left px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Logo</th>
+                                <th className="text-left px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Nom</th>
+                                <th className="text-left px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Statut</th>
+                                <th className="text-right px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-slate-50">
                             {brands.map((brand) => (
-                                <tr key={brand.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <div className="w-16 h-12 rounded-lg bg-white border border-slate-100 flex items-center justify-center p-1.5 overflow-hidden">
+                                <tr key={brand.id} className="hover:bg-slate-50/50 transition-colors">
+                                    <td className="px-8 py-5">
+                                        <div className="w-16 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-2 overflow-hidden shadow-sm">
                                             {brand.logoUrl?.trim() ? (
                                                 <img
-                                                    src={normalizeImageUrl(brand.logoUrl) || brand.logoUrl}
-                                                    alt={brand.name}
-                                                    className="max-w-full max-h-full object-contain"
-                                                    onError={(e) => {
-                                                        (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/f8fafc/cbd5e1?text=X';
-                                                    }}
-                                                />
+                                                     src={brand.logoUrl}
+                                                     alt={brand.name}
+                                                     className="max-w-full max-h-full object-contain"
+                                                     onError={(e) => {
+                                                         (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/f8fafc/cbd5e1?text=?';
+                                                     }}
+                                                 />
                                             ) : (
-                                                <span className="text-xs font-bold text-slate-300">N/A</span>
+                                                <ImageIcon size={16} className="text-slate-200" />
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <span className="font-semibold text-slate-800 text-sm">{brand.name}</span>
+                                    <td className="px-8 py-5">
+                                        <span className="font-bold text-slate-900 text-sm tracking-tight">{brand.name}</span>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-8 py-5">
                                         <button
                                             onClick={() => handleToggleActive(brand)}
-                                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${brand.isActive
-                                                ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                                                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${brand.isActive
+                                                ? 'bg-emerald-50 text-emerald-600'
+                                                : 'bg-slate-100 text-slate-400'
                                                 }`}
                                         >
-                                            <span className={`w-1.5 h-1.5 rounded-full ${brand.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                                            <span className={`size-1.5 rounded-full ${brand.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
                                             {brand.isActive ? 'Active' : 'Inactive'}
                                         </button>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-8 py-5 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => handleEdit(brand)}
-                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
                                                 title="Modifier"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">edit</span>
+                                                <Edit2 size={18} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(brand.id)}
-                                                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
                                                 title="Supprimer"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                <Trash2 size={18} />
                                             </button>
                                         </div>
                                     </td>

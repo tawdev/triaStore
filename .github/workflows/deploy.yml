@@ -1,4 +1,4 @@
-name: Deploy Animal Food Express
+name: Deploy TriaStor
 
 on:
   push:
@@ -15,22 +15,22 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /var/www/animal2
+            cd /var/www/triaStore
             
             # Pull latest changes
             git pull origin main
             
             # Update Backend
-            cd backend/droguerie-backend
+            cd backend
             npm install
             npm run build
-            pm2 restart animal-backend
+            pm2 restart tria-backend
             
             # Update Frontend
-            cd ../..
+            cd ../frontend
             npm install
             npm run build
-            pm2 restart animal-frontend
+            pm2 restart tria-frontend
             
             # Cleanup PM2
             pm2 save

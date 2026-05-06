@@ -17,7 +17,7 @@ export class Setting {
   @Column({ type: 'text', nullable: true })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   logoUrl: string;
 
   @Column({ type: 'text', nullable: true })

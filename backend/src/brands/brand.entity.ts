@@ -9,7 +9,7 @@ export class Brand {
     @Column({ unique: true })
     name: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true })
     logoUrl: string;
 
     @Column({ default: true })

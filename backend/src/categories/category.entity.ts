@@ -15,7 +15,7 @@ export class Category {
     @Column({ default: true })
     isActive: boolean;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true })
     imageUrl: string;
 
     @Column({ nullable: true })

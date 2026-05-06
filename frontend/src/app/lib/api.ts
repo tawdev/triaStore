@@ -243,25 +243,35 @@ import Cookies from 'js-cookie';
  */
 export function normalizeImageUrl(url: string | null | undefined): string | null {
     if (!url || typeof url !== 'string') return null;
-    const trimmed = url.trim();
+    let trimmed = url.trim();
     if (!trimmed) return null;
 
+    // Handle data URLs (base64) - strip all whitespace as it's invalid in a URL context
+    if (trimmed.startsWith('data:')) {
+        return trimmed.replace(/\s/g, '');
+    }
+
     // Already absolute or protocol-relative
-    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:') || trimmed.startsWith('//')) {
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('//')) {
         return trimmed;
     }
     
     // If it looks like a domain (contains a dot before any slash and doesn't start with /), 
     // it's likely an external URL missing the protocol.
-    const firstDot = trimmed.indexOf('.');
-    const firstSlash = trimmed.indexOf('/');
-    if (firstDot !== -1 && (firstSlash === -1 || firstDot < firstSlash) && !trimmed.startsWith('/')) {
-        return `https://${trimmed}`;
+    // We only check short strings to avoid false positives with long paths
+    if (trimmed.length < 255) {
+        const firstDot = trimmed.indexOf('.');
+        const firstSlash = trimmed.indexOf('/');
+        if (firstDot !== -1 && (firstSlash === -1 || firstDot < firstSlash) && !trimmed.startsWith('/')) {
+            return `https://${trimmed}`;
+        }
     }
 
-    const base = API_BASE.replace(/\/$/, '');
+    const base = (API_BASE || '').replace(/\/$/, '');
     const path = trimmed.replace(/^\//, '');
     
+    if (!base) return `/${path}`;
+
     // If the path already starts with 'api/', don't prepend it if the base already ends with /api
     if (path.startsWith('api/') && base.endsWith('/api')) {
         return `${base.replace(/\/api$/, '')}/${path}`;

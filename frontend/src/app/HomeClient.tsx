@@ -25,7 +25,7 @@ import {
   ThumbsUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, type Category, type Product, type Brand, type BlogPost, type Testimonial, type Faq } from '@/app/lib/api';
+import { api, normalizeImageUrl, type Category, type Product, type Brand, type BlogPost, type Testimonial, type Faq } from '@/app/lib/api';
 import ProductCard from '@/app/components/ProductCard';
 import { ProductSkeleton } from '@/app/components/Skeleton';
 import ProductRating from '@/app/components/ProductRating';
@@ -176,6 +176,37 @@ export default function HomeClient({
                 <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Service client</h4>
                 <p className="text-[11px] font-bold text-slate-400">Disponible 7j/7</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BRANDS SECTION */}
+      <section className="py-16 bg-white border-y border-slate-50 overflow-hidden">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="relative flex overflow-x-hidden">
+            <div className="flex animate-marquee whitespace-nowrap items-center gap-16 lg:gap-24 py-2">
+              {[...initialBrands, ...initialBrands].map((brand, i) => (
+                <div 
+                  key={`${brand.id}-${i}`} 
+                  className="h-10 w-32 md:w-40 relative flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-500 group flex items-center justify-center"
+                >
+                  {brand.logoUrl?.trim() ? (
+                    <img
+                      src={normalizeImageUrl(brand.logoUrl) || brand.logoUrl}
+                      alt={brand.name}
+                      className="h-full w-full object-contain opacity-50 group-hover:opacity-100 transition-opacity"
+                      onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = `<span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">${brand.name}</span>`;
+                      }}
+                    />
+                  ) : (
+                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{brand.name}</span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -338,6 +369,66 @@ export default function HomeClient({
             >
               <ChevronRight size={24} />
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY CHOOSE US SECTION */}
+      <section className="py-24 bg-white">
+        <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
+          <div className="bg-white rounded-[40px] border border-slate-100 shadow-xl overflow-hidden flex flex-col lg:flex-row">
+            {/* Left Brand Block */}
+            <div className="w-full lg:w-[400px] relative min-h-[300px] group">
+              <Image 
+                src="/tria-crystal/hero.png" 
+                alt="Tria Lampe Design" 
+                fill 
+                priority
+                unoptimized
+                className="object-cover transition-transform duration-700 group-hover:scale-105" 
+              />
+              <div className="absolute inset-0 bg-black/40 flex flex-col justify-center p-12 text-white">
+                <h2 className="text-3xl font-black mb-8 uppercase leading-tight tracking-tight">Pourquoi choisir<br /><span className="text-[#B8860B]">Tria Lampe ?</span></h2>
+                <Link href="/about" className="px-8 py-4 bg-[#B8860B] text-white rounded-md font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all w-fit shadow-lg shadow-[#B8860B]/20">
+                  En savoir plus
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Features Block */}
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center p-8 lg:p-12 gap-12 bg-slate-50/30">
+              <div className="flex flex-col items-center text-center px-4">
+                <div className="size-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#B8860B] mb-6">
+                  <Lamp size={28} strokeWidth={1.5} />
+                </div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3">Design unique</h4>
+                <p className="text-[11px] font-bold text-slate-400 leading-relaxed uppercase tracking-tighter">Des lampes au style moderne et intemporel.</p>
+              </div>
+
+              <div className="flex flex-col items-center text-center px-4">
+                <div className="size-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#B8860B] mb-6">
+                  <Award size={28} strokeWidth={1.5} />
+                </div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3">Qualité supérieure</h4>
+                <p className="text-[11px] font-bold text-slate-400 leading-relaxed uppercase tracking-tighter">Matériaux durables et finitions impeccables.</p>
+              </div>
+
+              <div className="flex flex-col items-center text-center px-4">
+                <div className="size-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#B8860B] mb-6">
+                  <Zap size={28} strokeWidth={1.5} />
+                </div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3">Économie d'énergie</h4>
+                <p className="text-[11px] font-bold text-slate-400 leading-relaxed uppercase tracking-tighter">Ampoules LED pour un éclairage durable.</p>
+              </div>
+
+              <div className="flex flex-col items-center text-center px-4">
+                <div className="size-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#B8860B] mb-6">
+                  <CheckCircle2 size={28} strokeWidth={1.5} />
+                </div>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3">Satisfaction garantie</h4>
+                <p className="text-[11px] font-bold text-slate-400 leading-relaxed uppercase tracking-tighter">Votre satisfaction est notre priorité.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

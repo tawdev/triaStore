@@ -33,7 +33,7 @@ export class Product {
     @Column({ default: 0 })
     stock: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true })
     imageUrl: string;
 
     @Column('simple-json', { nullable: true })
