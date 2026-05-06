@@ -131,12 +131,12 @@ export default function HomeClient({
                     Collection Exclusive 2026
                 </motion.span>
                 
-                <h1 className="text-6xl md:text-[85px] font-bold leading-[1.05] mb-8 drop-shadow-2xl">
+                <h1 className="text-6xl md:text-[85px] leading-[1.05] mb-8 drop-shadow-2xl">
                     <motion.span 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7, duration: 0.8 }}
-                        className="block"
+                        className="block font-bold font-outfit"
                     >
                         Éclairez
                     </motion.span>
@@ -144,7 +144,7 @@ export default function HomeClient({
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.9, duration: 0.8 }}
-                        className="text-[#B8860B] italic font-playfair font-light block"
+                        className="text-[#B8860B] italic font-playfair font-light block tracking-wide"
                     >
                         votre intérieur
                     </motion.span>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, ShieldCheck, Headphones, CheckCircle2, XCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Magnetic from '@/app/components/Magnetic';
 import { useSettings } from '../context/SettingsContext';
 import { api } from '@/app/lib/api';
 
@@ -70,9 +71,9 @@ export default function ContactPage() {
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <img 
-                        src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=2069&auto=format&fit=crop" 
-                        alt="Maison Tria"
-                        className="w-full h-full object-cover opacity-60 scale-105"
+                        src="/tria-crystal/banner1.png" 
+                        alt="Maison Tria Cristal"
+                        className="w-full h-full object-cover opacity-60"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
@@ -90,8 +91,9 @@ export default function ContactPage() {
                         >
                             Service Conciergerie
                         </motion.span>
-                        <h1 className="text-6xl md:text-8xl font-black text-white mb-10 uppercase tracking-tighter leading-[0.9]">
-                            À Votre <br/><span className="text-[#B8860B]">Écoute</span>
+                        <h1 className="text-6xl md:text-8xl leading-[0.9] mb-10 uppercase tracking-tighter">
+                            <span className="font-outfit font-black text-white">À Votre</span> <br/>
+                            <span className="text-[#B8860B] font-playfair italic font-light lowercase">écoute</span>
                         </h1>
                         <p className="text-xl text-slate-300 font-medium leading-relaxed max-w-2xl">
                             Qu'il s'agisse d'un projet d'éclairage complet ou d'une simple question sur une pièce exclusive, nos experts sont là pour vous guider dans l'excellence.
@@ -169,20 +171,22 @@ export default function ContactPage() {
                                         <XCircle size={24} /> Une erreur est survenue. Veuillez réessayer.
                                     </motion.div>
                                 ) : (
-                                    <button 
-                                        disabled={status === 'loading'}
-                                        className="w-full h-20 bg-slate-900 text-white font-black rounded-3xl hover:bg-[#B8860B] transition-all shadow-2xl shadow-slate-900/10 flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-xs" 
-                                        type="submit"
-                                    >
-                                        {status === 'loading' ? (
-                                            <div className="size-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        ) : (
-                                            <>
-                                                Envoyer la demande
-                                                <ArrowRight size={18} />
-                                            </>
-                                        )}
-                                    </button>
+                                    <Magnetic>
+                                        <button 
+                                            disabled={status === 'loading'}
+                                            className="w-full h-20 bg-slate-900 text-white font-black rounded-3xl hover:bg-[#B8860B] transition-all shadow-2xl shadow-slate-900/10 flex items-center justify-center gap-4 uppercase tracking-[0.2em] text-xs" 
+                                            type="submit"
+                                        >
+                                            {status === 'loading' ? (
+                                                <div className="size-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            ) : (
+                                                <>
+                                                    Envoyer la demande
+                                                    <ArrowRight size={18} />
+                                                </>
+                                            )}
+                                        </button>
+                                    </Magnetic>
                                 )}
                             </AnimatePresence>
                         </form>
@@ -262,8 +266,8 @@ export default function ContactPage() {
             >
                 <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
                     <Sparkles size={40} className="text-[#B8860B] mx-auto mb-8" />
-                    <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8 leading-none">
-                        Vivez <span className="text-[#B8860B]">L'Expérience</span> Tria
+                    <h2 className="text-4xl md:text-7xl font-playfair italic font-light text-white mb-8 leading-none">
+                        Vivez <span className="font-outfit font-black not-italic text-[#B8860B] uppercase tracking-tighter">L'Expérience</span> Tria
                     </h2>
                     <p className="text-slate-400 text-lg font-medium max-w-xl mx-auto mb-12">
                         Inscrivez-vous pour recevoir nos invitations aux ventes privées et découvrir nos nouvelles collections en avant-première.

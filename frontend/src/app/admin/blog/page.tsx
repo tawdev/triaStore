@@ -689,8 +689,8 @@ export default function AdminBlogPage() {
                         </div>
 
                         {/* Modal Body (Scrollable) */}
-                        <div className="flex-1 overflow-y-auto p-10 bg-slate-50/30">
-                            <form onSubmit={handleSubmit} className="space-y-12 pb-10">
+                        <div className="flex-1 overflow-y-auto p-10 bg-slate-50/30" data-lenis-prevent>
+                            <form onSubmit={handleSubmit} className="space-y-12 pb-24">
                                 {/* Section 1: Basic Information */}
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 border-b border-slate-100 pb-12">
                                     <div>
@@ -984,7 +984,8 @@ export default function AdminBlogPage() {
                                 <X size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleTipSubmit} className="p-8 space-y-6">
+                        <div className="overflow-y-auto max-h-[70vh]" data-lenis-prevent>
+                            <form onSubmit={handleTipSubmit} className="p-8 space-y-6">
                             <div className="space-y-2">
                                 <label className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Contenu de l'astuce</label>
                                 <textarea
@@ -1035,6 +1036,7 @@ export default function AdminBlogPage() {
                                 </button>
                             </div>
                         </form>
+                    </div>
                     </div>
                 </div>
             )}

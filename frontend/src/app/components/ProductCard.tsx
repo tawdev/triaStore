@@ -61,7 +61,9 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
                                     {product.name}
                                 </h3>
                             </Link>
-                            <ProductRating productId={product.id} starSize={12} className="!gap-1" />
+                            <Link href={`/products/${product.id}#avis`} className="block hover:opacity-80 transition-opacity">
+                                <ProductRating productId={product.id} starSize={12} className="!gap-1" />
+                            </Link>
                         </div>
                         <motion.button 
                             whileTap={{ scale: 0.8 }}
@@ -173,9 +175,9 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
                     </h3>
                 </Link>
                 
-                <div className="mb-5">
+                <Link href={`/products/${product.id}#avis`} className="mb-5 block hover:opacity-80 transition-opacity">
                     <ProductRating productId={product.id} starSize={9} className="!gap-0.5 opacity-60" />
-                </div>
+                </Link>
 
                 <div className="mt-auto w-full flex items-center justify-between pt-5 border-t border-slate-50/80">
                     <div className="flex flex-col items-start">

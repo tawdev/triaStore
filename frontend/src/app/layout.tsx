@@ -4,6 +4,8 @@ import "./globals.css";
 import { Inter, Outfit, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
 import PublicShell from "@/app/components/PublicShell";
+import SmoothScrolling from "@/app/components/SmoothScrolling";
+import ConciergeWidget from "@/app/components/ConciergeWidget";
 import { CartProvider } from "@/app/context/CartContext";
 import { WishlistProvider } from "@/app/context/WishlistContext";
 import { CompareProvider } from "@/app/context/CompareContext";
@@ -97,9 +99,12 @@ export default function RootLayout({
                 <WishlistProvider>
                   <CompareProvider>
                     <CartProvider>
-                      <PublicShell>
-                        {children}
-                      </PublicShell>
+                      <SmoothScrolling>
+                        <PublicShell>
+                          {children}
+                        </PublicShell>
+                        <ConciergeWidget />
+                      </SmoothScrolling>
                       <NotificationOverlay />
                       <ScrollToTop />
 

@@ -9,8 +9,11 @@ import {
   CheckCircle2, ArrowRight, Sparkles, Zap, Lightbulb, PenTool
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSettings } from '@/app/context/SettingsContext';
+import Magnetic from '@/app/components/Magnetic';
 
 export default function AboutUsPage() {
+  const { settings } = useSettings();
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -55,17 +58,19 @@ export default function AboutUsPage() {
       {/* ═══════════ HERO SECTION ═══════════ */}
       <section className="relative h-[80vh] overflow-hidden bg-slate-900">
         <div
-          className="absolute inset-0 scale-110 opacity-40"
+          className="absolute inset-0 scale-110"
           style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         >
           <Image
-            src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=1920"
-            alt="Tria Lampe Workshop"
+            src="/tria-crystal/hero.png"
+            alt="Tria Cristal Hero"
             fill
             className="object-cover"
             priority
           />
         </div>
+        <div className="absolute inset-0 bg-black/50 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
         
         {/* Content */}
         <div className="relative z-20 h-full flex flex-col items-center justify-center px-6 text-center">
@@ -80,9 +85,10 @@ export default function AboutUsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-white text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-none uppercase max-w-5xl"
+            className="text-white text-6xl md:text-[100px] leading-none mb-8 uppercase max-w-5xl"
           >
-            Illuminer <span className="text-[#B8860B]">l'Exceptionnel</span>
+            <span className="font-outfit font-black tracking-tighter">Illuminer</span> <br/>
+            <span className="text-[#B8860B] font-playfair italic font-light lowercase">l'exceptionnel</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -98,12 +104,14 @@ export default function AboutUsPage() {
             transition={{ delay: 0.3 }}
             className="flex gap-6"
           >
-            <Link
-              href="/products"
-              className="bg-[#B8860B] text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-[#966d09] transition-all shadow-2xl shadow-[#B8860B]/20"
-            >
-              Découvrir nos collections
-            </Link>
+            <Magnetic>
+              <Link
+                href="/products"
+                className="bg-[#B8860B] text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-2xl shadow-[#B8860B]/20"
+              >
+                Découvrir l'univers
+              </Link>
+            </Magnetic>
           </motion.div>
         </div>
       </section>
@@ -120,10 +128,10 @@ export default function AboutUsPage() {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-20 items-center">
             <div className="relative">
-                <div className="aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl">
+                <div className="aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl border border-slate-100">
                     <Image
-                        src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&q=80&w=800"
-                        alt="Craftsmanship"
+                        src="/tria-crystal/banner1.png"
+                        alt="Tria Cristal Savoir-Faire"
                         fill
                         className="object-cover"
                     />
@@ -138,8 +146,8 @@ export default function AboutUsPage() {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 text-[#B8860B] text-[10px] font-black uppercase tracking-widest mb-8">
                 Notre Philosophie
               </div>
-              <h2 className="text-5xl md:text-6xl font-black text-slate-900 mb-10 leading-[0.95] uppercase tracking-tighter">
-                Le Détail qui <span className="text-[#B8860B]">Révèle</span> l'Espace
+              <h2 className="text-5xl md:text-6xl font-playfair italic font-light text-slate-900 mb-10 leading-tight">
+                Le Détail qui <span className="font-outfit font-black not-italic text-[#B8860B] uppercase tracking-tighter">Révèle</span> l'Espace
               </h2>
               <div className="space-y-8 text-slate-500 text-lg leading-relaxed font-medium">
                 <p>
@@ -177,8 +185,8 @@ export default function AboutUsPage() {
 
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-24">
-            <h2 className="text-xs font-black text-[#B8860B] uppercase tracking-[0.3em] mb-6">Nos Piliers</h2>
-            <h3 className="text-5xl font-black text-slate-900 uppercase tracking-tighter">L'Exigence du <span className="text-[#B8860B]">Luxe</span></h3>
+            <h2 className="text-xs font-black text-[#B8860B] uppercase tracking-[0.4em] mb-6">Nos Piliers</h2>
+            <h3 className="text-5xl md:text-6xl font-playfair italic font-light text-slate-900">L'Exigence du <span className="font-outfit font-black not-italic text-[#B8860B] uppercase tracking-tighter">Luxe</span></h3>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, i) => (
@@ -242,7 +250,10 @@ export default function AboutUsPage() {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-12">
-              <h2 className="text-5xl md:text-7xl font-black leading-none uppercase tracking-tighter">Une Expérience <br/><span className="text-[#B8860B]">Sensorielle</span></h2>
+              <h2 className="text-5xl md:text-8xl leading-none uppercase tracking-tighter">
+                <span className="font-outfit font-black text-white">Une Expérience</span> <br/>
+                <span className="text-[#B8860B] font-playfair italic font-light lowercase">sensorielle</span>
+              </h2>
               <p className="text-slate-400 text-xl font-medium leading-relaxed">
                 Plus qu'un achat, nous vous offrons un accompagnement sur mesure pour sublimer votre architecture intérieure.
               </p>
@@ -264,11 +275,11 @@ export default function AboutUsPage() {
               </button>
             </div>
             <div className="relative">
-                <div className="aspect-square rounded-[60px] overflow-hidden">
-                    <Image src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800" alt="Showroom Lustres Cristal" fill className="object-cover" />
+                <div className="aspect-[4/5] rounded-[60px] overflow-hidden shadow-2xl border border-white/10">
+                    <Image src="/tria-crystal/banner1.png" alt="Showroom Tria Cristal" fill className="object-cover" />
                 </div>
                 <div className="absolute top-10 -left-10 size-40 bg-[#B8860B] rounded-[40px] flex items-center justify-center rotate-12 shadow-2xl">
-                    <Lightbulb size={60} className="text-white -rotate-12" />
+                    <Sparkles size={60} className="text-white -rotate-12" />
                 </div>
             </div>
           </div>
@@ -291,21 +302,21 @@ export default function AboutUsPage() {
                 <MapPin size={32} />
               </div>
               <h3 className="text-xl font-black text-slate-900 mb-4 uppercase">Showroom Flagship</h3>
-              <p className="text-slate-500 font-medium">Angle Boulevard Anfa, <br/>Casablanca, Maroc</p>
+              <p className="text-slate-500 font-medium">{settings?.address || 'Angle Boulevard Anfa, Casablanca, Maroc'}</p>
             </div>
             <div className="bg-white rounded-[40px] p-12 border border-slate-50 text-center group hover:border-[#B8860B] transition-all duration-500">
               <div className="size-20 rounded-3xl bg-slate-50 flex items-center justify-center mx-auto mb-8 text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all">
                 <Phone size={32} />
               </div>
               <h3 className="text-xl font-black text-slate-900 mb-4 uppercase">Contact Privé</h3>
-              <p className="text-slate-500 font-medium">+212 5 22 12 34 56<br/>conciergerie@trialampe.ma</p>
+              <p className="text-slate-500 font-medium">{settings?.phoneNumber || '+212 5 22 12 34 56'}<br/>{settings?.supportEmail || 'conciergerie@trialampe.ma'}</p>
             </div>
             <div className="bg-white rounded-[40px] p-12 border border-slate-100 text-center group hover:border-[#B8860B] transition-all duration-500">
               <div className="size-20 rounded-3xl bg-slate-50 flex items-center justify-center mx-auto mb-8 text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all">
                 <Clock size={32} />
               </div>
               <h3 className="text-xl font-black text-slate-900 mb-4 uppercase">Horaires VIP</h3>
-              <p className="text-slate-500 font-medium">Lun – Sam : 10h00 – 19h30<br/>Dimanche sur rendez-vous</p>
+              <p className="text-slate-500 font-medium">{process.env.NEXT_PUBLIC_COORDONNEES_PHONE_HOURS || 'Lun – Sam : 10h00 – 19h30'}<br/>Dimanche sur rendez-vous</p>
             </div>
           </div>
         </div>
@@ -317,12 +328,23 @@ export default function AboutUsPage() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="py-24 bg-[#B8860B] relative overflow-hidden"
+        className="py-32 relative overflow-hidden"
       >
+        {/* Background Image with Parallax */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/tria-crystal/hero.png" 
+            alt="Tria Cristal CTA" 
+            fill 
+            className="object-cover scale-110"
+          />
+          <div className="absolute inset-0 bg-black/70 z-10" />
+          <div className="absolute inset-0 bg-[#B8860B]/20 z-10 mix-blend-overlay" />
+        </div>
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <h2 className="text-white text-5xl md:text-7xl font-black mb-8 leading-[0.9] uppercase tracking-tighter">
-            Prêt à Illuminer <br/>Votre <span className="text-slate-900">Monde</span> ?
+          <h2 className="text-white text-5xl md:text-8xl font-playfair italic font-light mb-8 leading-none">
+            Prêt à Illuminer <br/><span className="font-outfit font-black not-italic uppercase tracking-tighter text-slate-900">Votre Monde ?</span>
           </h2>
           <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12">
             <Link

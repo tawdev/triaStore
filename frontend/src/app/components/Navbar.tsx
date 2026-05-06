@@ -110,6 +110,7 @@ export default function Navbar() {
 
     const navItems = [
         { name: 'Collections', href: '/products' },
+        { name: 'Inspiration', href: '/inspiration' },
         { name: 'La Maison', href: '/about' },
         { name: 'Journal', href: '/blog' },
         { name: 'Contact', href: '/contact' },
@@ -216,7 +217,7 @@ export default function Navbar() {
                         </motion.div>
 
                         {/* Navigation Links - Centered */}
-                        <div className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+                        <div className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
                             {navItems.map((item, i) => (
                                 <motion.div
                                     key={item.name}
@@ -226,7 +227,7 @@ export default function Navbar() {
                                 >
                                     <Link
                                         href={item.href}
-                                        className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all relative py-2 group ${
+                                        className={`text-[11px] font-black uppercase tracking-[0.15em] transition-all relative py-2 group ${
                                             pathname === item.href 
                                             ? 'text-[#B8860B]' 
                                             : !isScrolled && isHome ? 'text-white/80 hover:text-white' : 'text-slate-400 hover:text-slate-900'
@@ -243,7 +244,7 @@ export default function Navbar() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.6, duration: 0.5 }}
-                            className="flex items-center gap-4 sm:gap-6 lg:gap-8"
+                            className="flex items-center gap-3 sm:gap-4 lg:gap-6"
                         >
                             <button 
                                 onClick={() => setIsSearchOpen(true)}

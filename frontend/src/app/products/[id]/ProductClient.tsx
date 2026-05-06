@@ -13,7 +13,7 @@ import {
     HelpCircle, Headphones, ChevronRight, Minus, Plus, Share2,
     Facebook, Linkedin, MessageCircleWarning, Copy as CopyIcon,
     GitCompare, MessageCircle, X, MapPin, User, Phone, CheckCircle2, FileText,
-    ArrowRight, Sparkles, Zap, Award
+    ArrowRight, Sparkles, Zap, Award, Sun, Moon, Weight, Ruler, SunDim, Lightbulb
 } from 'lucide-react';
 import { useNotification } from '@/app/context/NotificationContext';
 import ProductImageZoom from '@/app/components/ProductImageZoom';
@@ -21,6 +21,7 @@ import RelatedProducts from '@/app/components/RelatedProducts';
 import ProductRating from '@/app/components/ProductRating';
 import { StoreSettings } from '@/app/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import Magnetic from '@/app/components/Magnetic';
 
 interface ProductClientProps {
     initialProduct: Product;
@@ -52,10 +53,22 @@ export default function ProductClient({ initialProduct, initialReviews, settings
     });
     const [hasReviewed, setHasReviewed] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [dimmerLevel, setDimmerLevel] = useState(100);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    useEffect(() => {
+        if (mounted && typeof window !== 'undefined' && window.location.hash === '#avis') {
+            setActiveTab('avis');
+            // Optional: scroll to the reviews section
+            const element = document.getElementById('avis');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [mounted, product.id]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -254,9 +267,14 @@ export default function ProductClient({ initialProduct, initialReviews, settings
 
                     {/* ── LEFT: Product Image & Gallery ── */}
                     <div className="w-full lg:w-[600px] flex-shrink-0">
-                        <div className="relative aspect-square rounded-[40px] overflow-hidden bg-white group">
+                        <div className="relative aspect-square rounded-[40px] overflow-hidden group border border-slate-100" style={{ backgroundColor: `rgba(0,0,0,${(100 - dimmerLevel) / 100})`, transition: 'background-color 0.3s ease' }}>
                             {activeImage ? (
-                                <ProductImageZoom src={activeImage} alt={product.name} />
+                                <div style={{ 
+                                    filter: `brightness(${Math.max(50, dimmerLevel)}%) drop-shadow(0 0 ${Math.max(0, 100 - dimmerLevel) * 1.5}px rgba(255, 215, 0, ${(100 - dimmerLevel) / 100}))`,
+                                    transition: 'filter 0.3s ease'
+                                }} className="w-full h-full">
+                                    <ProductImageZoom src={activeImage} alt={product.name} />
+                                </div>
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-slate-200">
                                     <MessageCircleWarning size={64} strokeWidth={1} />
@@ -296,6 +314,29 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                 ))}
                             </div>
                         )}
+
+                        {/* Variateur Virtuel (Dimmer) */}
+                        <div className="mt-8 p-6 bg-slate-50 rounded-3xl border border-slate-100 relative overflow-hidden group">
+                            <div className="flex items-center justify-between mb-4 relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <SunDim size={18} className="text-[#B8860B]" />
+                                    <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-900">Variateur Virtuel</h4>
+                                </div>
+                                <span className="text-[10px] font-bold text-slate-400">{dimmerLevel}%</span>
+                            </div>
+                            <div className="flex items-center gap-4 relative z-10">
+                                <Moon size={16} className="text-slate-400" />
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="100" 
+                                    value={dimmerLevel}
+                                    onChange={(e) => setDimmerLevel(Number(e.target.value))}
+                                    className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#B8860B]"
+                                />
+                                <Sun size={16} className="text-[#B8860B]" />
+                            </div>
+                        </div>
                     </div>
 
                     {/* ── RIGHT: Product Info ── */}
@@ -359,19 +400,21 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                     </button>
                                 </div>
 
-                                <button
-                                    disabled={product.stock === 0}
-                                    onClick={() => addToCart({
-                                        productId: Number(product.id),
-                                        name: product.name,
-                                        price: product.price,
-                                        imageUrl: product.imageUrl
-                                    }, quantity)}
-                                    className="flex-1 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#B8860B] transition-all shadow-xl shadow-slate-900/10 disabled:opacity-50"
-                                >
-                                    <ShoppingCart size={18} />
-                                    Ajouter au panier
-                                </button>
+                                <Magnetic>
+                                    <button
+                                        disabled={product.stock === 0}
+                                        onClick={() => addToCart({
+                                            productId: Number(product.id),
+                                            name: product.name,
+                                            price: product.price,
+                                            imageUrl: product.imageUrl
+                                        }, quantity)}
+                                        className="flex-1 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-3 px-8 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#B8860B] transition-all shadow-xl shadow-slate-900/10 disabled:opacity-50"
+                                    >
+                                        <ShoppingCart size={18} />
+                                        Ajouter au panier
+                                    </button>
+                                </Magnetic>
 
                                 <motion.button
                                     whileTap={{ scale: 0.8 }}
@@ -383,33 +426,45 @@ export default function ProductClient({ initialProduct, initialReviews, settings
                                 </motion.button>
                             </div>
 
-                            <button
-                                onClick={() => setIsCheckingOut(true)}
-                                className="w-full h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center gap-4 text-[12px] font-black uppercase tracking-[0.2em] hover:bg-[#1ebc57] transition-all shadow-xl shadow-[#25D366]/20 group"
-                            >
-                                <MessageCircle size={24} className="group-hover:scale-110 transition-transform" />
-                                Commander par WhatsApp
-                            </button>
+                            <Magnetic>
+                                <button
+                                    onClick={() => setIsCheckingOut(true)}
+                                    className="w-full h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center gap-4 text-[12px] font-black uppercase tracking-[0.2em] hover:bg-[#1ebc57] transition-all shadow-xl shadow-[#25D366]/20 group"
+                                >
+                                    <MessageCircle size={24} className="group-hover:scale-110 transition-transform" />
+                                    Commander par WhatsApp
+                                </button>
+                            </Magnetic>
                         </div>
 
-                        {/* Details Grid */}
-                        <div className="grid grid-cols-2 gap-8 py-8 border-y border-slate-100">
+                        {/* Visual Tech Specs */}
+                        <div className="grid grid-cols-3 gap-4 py-8 border-y border-slate-100">
+                            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center group hover:bg-slate-900 transition-colors duration-500">
+                                <Ruler size={24} strokeWidth={1.5} className="text-slate-400 mb-2 group-hover:text-white transition-colors" />
+                                <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-white/60 mb-1">Dimensions</h4>
+                                <p className="text-xs font-bold text-slate-900 group-hover:text-white">L 40 x H 60 cm</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center group hover:bg-slate-900 transition-colors duration-500">
+                                <Weight size={24} strokeWidth={1.5} className="text-slate-400 mb-2 group-hover:text-white transition-colors" />
+                                <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-white/60 mb-1">Poids</h4>
+                                <p className="text-xs font-bold text-slate-900 group-hover:text-white">3.2 kg</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center group hover:bg-slate-900 transition-colors duration-500">
+                                <Lightbulb size={24} strokeWidth={1.5} className="text-slate-400 mb-2 group-hover:text-white transition-colors" />
+                                <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-white/60 mb-1">Ampoule</h4>
+                                <p className="text-xs font-bold text-slate-900 group-hover:text-white">E27 (LED incl.)</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex items-center justify-between">
                             <div>
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Référence</h4>
+                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Référence</h4>
                                 <p className="text-sm font-bold text-slate-900">{product.sku || 'TRIA-'+product.id}</p>
                             </div>
-                            <div>
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Marque</h4>
-                                <p className="text-sm font-bold text-[#B8860B]">{product.brand?.name || 'Tria Lampe Signature'}</p>
-                            </div>
-                            <div>
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Livraison</h4>
-                                <p className="text-sm font-bold text-slate-900">24h - 48h (Maroc)</p>
-                            </div>
                             <div className="flex items-center gap-4">
-                                <button onClick={() => handleShare('facebook')} className="text-slate-300 hover:text-[#B8860B] transition-colors"><Facebook size={18} /></button>
-                                <button onClick={() => handleShare('linkedin')} className="text-slate-300 hover:text-[#B8860B] transition-colors"><Linkedin size={18} /></button>
-                                <button className="text-slate-300 hover:text-[#B8860B] transition-colors"><Share2 size={18} /></button>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Partager :</span>
+                                <button onClick={() => handleShare('facebook')} className="size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#1877F2] transition-colors"><Facebook size={14} /></button>
+                                <button onClick={() => handleShare('linkedin')} className="size-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#0A66C2] transition-colors"><Linkedin size={14} /></button>
                             </div>
                         </div>
                     </div>
@@ -417,6 +472,7 @@ export default function ProductClient({ initialProduct, initialReviews, settings
 
                 {/* ═══════ REVIEWS & DESCRIPTION ═══════ */}
                 <motion.div 
+                    id="avis"
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
