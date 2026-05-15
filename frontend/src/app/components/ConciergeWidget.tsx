@@ -20,7 +20,7 @@ export default function ConciergeWidget() {
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Bonjour Tria Lampe, j'aimerais avoir des conseils personnalisés pour mon projet d'éclairage.")}`;
 
     return (
-        <div className="fixed bottom-8 left-8 right-auto sm:left-auto sm:right-8 z-[9999] font-outfit">
+        <div className="fixed bottom-32 left-8 right-auto sm:left-auto sm:right-8 sm:bottom-8 z-[9999] font-outfit">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div

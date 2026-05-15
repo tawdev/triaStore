@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import Header from './Header';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import MobileBottomNav from './MobileBottomNav';
 
 export default function PublicShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -18,7 +19,7 @@ export default function PublicShell({ children }: { children: React.ReactNode })
                     <Navbar />
                 </Suspense>
             )}
-            <main className={`flex-grow ${!isHome && !shouldHideShell ? 'pt-32' : ''}`}>
+            <main className={`flex-grow ${!isHome && !shouldHideShell ? 'pt-32' : ''} ${!shouldHideShell ? 'pb-24 md:pb-0' : ''}`}>
                 {children}
             </main>
             {!shouldHideShell && (
@@ -26,6 +27,7 @@ export default function PublicShell({ children }: { children: React.ReactNode })
                     <Footer />
                 </Suspense>
             )}
+            {!shouldHideShell && <MobileBottomNav />}
         </div>
     );
 }
