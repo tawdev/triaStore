@@ -4,23 +4,30 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Phone, MessageSquareMore, Sparkles } from 'lucide-react';
 import { useSettings } from '@/app/context/SettingsContext';
+import { usePathname } from 'next/navigation';
 
 export default function ConciergeWidget() {
+    const pathname = usePathname();
     const { settings } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
+
+    // Completely hide on admin or portal routes
+    if (pathname && (pathname.startsWith('/admin') || pathname.startsWith('/portal'))) {
+        return null;
+    }
 
     const whatsappNumber = settings?.phoneNumber?.replace(/\s+/g, '') || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212773662487";
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Bonjour Tria Lampe, j'aimerais avoir des conseils personnalisés pour mon projet d'éclairage.")}`;
 
     return (
-        <div className="fixed bottom-8 right-8 z-[9999] font-outfit">
+        <div className="fixed bottom-8 left-8 right-auto sm:left-auto sm:right-8 z-[9999] font-outfit">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                        className="absolute bottom-20 right-0 w-80 bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden"
+                        className="absolute bottom-20 left-0 sm:left-auto sm:right-0 w-[calc(100vw-4rem)] sm:w-80 bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden"
                     >
                         {/* Header */}
                         <div className="bg-[#0a0a0a] p-6 text-white relative">

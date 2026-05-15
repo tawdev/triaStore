@@ -224,7 +224,7 @@ export default function ShoppingCartPage() {
                             <div className="size-1 rounded-full bg-slate-200" />
                             <span className="text-slate-400 font-bold tracking-widest uppercase">Votre Curation</span>
                         </nav>
-                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                        <h1 className="text-4xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-none">
                             Bordereau de <span className="text-[#B8860B]">Curation</span>
                         </h1>
                     </div>
@@ -249,7 +249,7 @@ export default function ShoppingCartPage() {
                             <motion.div 
                                 layout
                                 key={item.productId} 
-                                className="flex flex-col sm:flex-row items-center gap-10 p-8 bg-white border border-slate-50 rounded-[40px] hover:shadow-2xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden"
+                                className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 p-6 sm:p-8 bg-white border border-slate-50 rounded-[30px] sm:rounded-[40px] hover:shadow-2xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden"
                             >
                                 {/* Decorative line */}
                                 <div className="absolute top-0 left-0 w-1 h-full bg-[#B8860B] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -277,27 +277,27 @@ export default function ShoppingCartPage() {
                                         <div className="h-[2px] w-6 bg-[#B8860B]" />
                                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#B8860B]">Pièce Signature</span>
                                     </div>
-                                    <Link href={`/products/${item.productId}`} className="text-2xl font-black text-slate-900 hover:text-[#B8860B] transition-colors block mb-4 truncate uppercase tracking-tight">
+                                    <Link href={`/products/${item.productId}`} className="text-xl sm:text-2xl font-black text-slate-900 hover:text-[#B8860B] transition-colors block mb-4 uppercase tracking-tight leading-tight">
                                         {item.name}
                                     </Link>
                                     
                                     <div className="flex items-center justify-between mt-10">
                                         {/* Quantity Selector */}
-                                        <div className="flex items-center bg-slate-900 rounded-[20px] p-1.5 shadow-xl">
+                                        <div className="flex items-center bg-slate-900 rounded-[15px] p-1 shadow-xl">
                                             <button
                                                 onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                                                className="size-10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                                                className="size-8 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
                                             >
-                                                <Minus size={16} />
+                                                <Minus size={14} />
                                             </button>
-                                            <span className="w-10 text-center font-black text-white text-sm">
+                                            <span className="w-8 text-center font-black text-white text-xs">
                                                 {item.quantity}
                                             </span>
                                             <button
                                                 onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                                                className="size-10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                                                className="size-8 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
                                             >
-                                                <Plus size={16} />
+                                                <Plus size={14} />
                                             </button>
                                         </div>
 
@@ -401,27 +401,27 @@ export default function ShoppingCartPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white w-full max-w-xl rounded-[60px] overflow-hidden relative z-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-slate-50"
+                            className="bg-white w-full max-w-xl rounded-[30px] sm:rounded-[60px] overflow-hidden relative z-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-slate-50 max-h-[90vh] overflow-y-auto no-scrollbar"
                         >
-                            <div className="bg-slate-900 p-12 text-white relative">
+                            <div className="bg-slate-900 p-8 sm:p-12 text-white relative">
                                 <button
                                     onClick={() => setIsCheckingOut(false)}
-                                    className="absolute top-10 right-10 text-white/20 hover:text-white transition-colors"
+                                    className="absolute top-6 right-6 sm:top-10 sm:right-10 text-white/20 hover:text-white transition-colors"
                                 >
-                                    <X size={24} />
+                                    <X size={20} />
                                 </button>
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="size-12 rounded-2xl bg-[#B8860B] flex items-center justify-center text-white">
-                                        <User size={24} />
+                                <div className="flex items-center gap-4 mb-2 sm:mb-6">
+                                    <div className="size-10 sm:size-12 rounded-xl sm:rounded-2xl bg-[#B8860B] flex items-center justify-center text-white">
+                                        <User size={20} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B]">Protocole de Réservation</span>
-                                        <h2 className="text-3xl font-black uppercase tracking-tighter mt-1">Vos Coordonnées</h2>
+                                        <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-[#B8860B]">Protocole de Réservation</span>
+                                        <h2 className="text-xl sm:text-3xl font-black uppercase tracking-tighter mt-1">Vos Coordonnées</h2>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="p-12 space-y-8">
+                            <div className="p-8 sm:p-12 space-y-6 sm:space-y-8">
                                 <div className="space-y-6">
                                     {[
                                         { label: 'Nom Complet', icon: User, key: 'name', placeholder: 'Votre identité' },

@@ -21,7 +21,7 @@ import { api, type Category, type Product } from '../lib/api';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useSettings } from '../context/SettingsContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { normalizeImageUrl } from '../lib/api';
 
 export default function Navbar() {
@@ -33,6 +33,7 @@ export default function Navbar() {
     
     const [categories, setCategories] = useState<Category[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -46,7 +47,15 @@ export default function Navbar() {
     const searchRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
     const isHome = pathname === '/';
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         setMounted(true);
@@ -70,6 +79,12 @@ export default function Navbar() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        setIsMenuOpen(false);
+        setIsMobileMenuOpen(false);
+        setIsSearchOpen(false);
+    }, [pathname]);
 
     // Live search with debounce
     useEffect(() => {
@@ -127,6 +142,10 @@ export default function Navbar() {
         router.push(`/products?${params.toString()}`);
     };
 
+    const { scrollY: windowScrollY } = useScroll();
+    const logoScale = useTransform(windowScrollY, [0, 100], [1, isMobile ? 0.9 : 0.95]);
+    const logoHeight = useTransform(windowScrollY, [0, 100], [isMobile ? 56 : 90, isMobile ? 40 : 64]); 
+    
     if (!mounted) return null;
 
     const storeName = settings?.storeName || 'TRIA LAMPE';
@@ -182,32 +201,35 @@ export default function Navbar() {
                 <nav 
                     className={`transition-all duration-500 font-outfit ${
                         isScrolled 
-                        ? 'bg-white/90 backdrop-blur-xl py-3 border-b border-slate-100 shadow-xl shadow-slate-200/10' 
-                        : isHome ? 'bg-transparent py-8 border-transparent' : 'bg-white py-6 border-b border-slate-50'
+                        ? 'bg-white/90 backdrop-blur-xl py-3 md:py-5 border-b border-slate-100 shadow-xl shadow-slate-200/10' 
+                        : isHome ? 'bg-transparent py-6 md:py-10 border-transparent' : 'bg-white py-4 md:py-8 border-b border-slate-50'
                     }`}
                 >
-                    <div className="mx-auto max-w-[1440px] px-6 sm:px-12 flex items-center justify-between gap-8">
+                    <div className="mx-auto max-w-[1440px] px-4 sm:px-12 flex items-center justify-between gap-2 md:gap-8">
                         <motion.div
+                            style={{ scale: logoScale }}
                             initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                            animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
                         >
-                            <Link href="/" className="shrink-0 group">
+                            <Link href="/" className="shrink-0 group block origin-left">
                                 {settings?.logoUrl ? (
-                                    <img 
+                                    <motion.img 
                                         src={settings.logoUrl} 
                                         alt={storeName} 
-                                        className={`transition-all duration-500 object-contain ${
-                                            isScrolled ? 'h-10 md:h-12' : 'h-14 md:h-20'
-                                        }`}
+                                        style={{ height: logoHeight, width: 'auto' }}
+                                        className="object-contain"
                                     />
                                 ) : (
                                     <div className="flex flex-col">
-                                        <span className={`text-2xl font-black tracking-tighter leading-none transition-colors duration-500 ${
-                                            !isScrolled && isHome ? 'text-white' : 'text-slate-900'
-                                        }`}>
+                                        <motion.span 
+                                            style={{ scale: logoScale }}
+                                            className={`text-2xl md:text-3xl font-black tracking-tighter leading-none transition-all duration-500 block origin-left ${
+                                                !isScrolled && isHome ? 'text-white' : 'text-slate-900'
+                                            }`}
+                                        >
                                             {storeName.split(' ')[0]} <span className="text-[#B8860B]">{storeName.split(' ').slice(1).join(' ')}</span>
-                                        </span>
+                                        </motion.span>
                                         <span className={`text-[8px] font-black tracking-[0.5em] uppercase mt-1 transition-colors duration-500 ${
                                             !isScrolled && isHome ? 'text-white/60' : 'text-slate-300'
                                         }`}>L'Excellence Lumineuse</span>
@@ -267,15 +289,15 @@ export default function Navbar() {
                             </Link>
 
                             <Link href="/cart" className="relative group">
-                                <div className={`size-11 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg ${
+                                <div className={`size-10 md:size-11 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg ${
                                     !isScrolled && isHome 
                                     ? 'bg-white text-slate-900 hover:bg-[#B8860B] hover:text-white' 
                                     : 'bg-slate-900 text-white hover:bg-[#B8860B]'
                                 } shadow-slate-900/10`}>
-                                    <ShoppingBag size={18} />
+                                    <ShoppingBag size={isMobile ? 16 : 18} />
                                 </div>
                                 {totalItems > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-[#B8860B] text-white text-[9px] font-black size-5 rounded-full flex items-center justify-center ring-4 ring-white">
+                                    <span className="absolute -top-1 -right-1 bg-[#B8860B] text-white text-[9px] font-black size-4 md:size-5 rounded-full flex items-center justify-center ring-2 md:ring-4 ring-white">
                                         {totalItems}
                                     </span>
                                 )}
@@ -325,14 +347,14 @@ export default function Navbar() {
 
                             {/* Mobile Toggle */}
                             <button 
-                                className={`lg:hidden size-11 rounded-full flex items-center justify-center transition-all duration-500 border ${
+                                className={`lg:hidden size-9 md:size-11 rounded-full flex items-center justify-center transition-all duration-500 border ${
                                     !isScrolled && isHome
                                     ? 'bg-white/10 border-white/20 text-white'
                                     : 'bg-slate-50 border-slate-100 text-slate-900'
                                 }`}
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             >
-                                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                                {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
                             </button>
                         </motion.div>
                     </div>
@@ -468,7 +490,7 @@ export default function Navbar() {
                                                                             )}
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
-                                                                            <p className="text-sm font-bold text-slate-800 truncate">{highlightText(product.name, searchQuery)}</p>
+                                                                            <p className="text-sm font-bold text-slate-800 line-clamp-2">{highlightText(product.name, searchQuery)}</p>
                                                                             <p className="text-xs font-black text-[#B8860B] mt-0.5">{api.formatPrice(product.price)} MAD</p>
                                                                         </div>
                                                                     </button>
@@ -492,10 +514,13 @@ export default function Navbar() {
             </AnimatePresence>
             {/* MOBILE MENU */}
             <AnimatePresence>
-                {isMenuOpen && (
+                {isMobileMenuOpen && (
                     <motion.div 
-                        initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }}
-                        className="lg:hidden fixed inset-0 z-[10000] bg-white p-10 flex flex-col"
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '100%' }}
+                        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                        className="lg:hidden fixed inset-0 z-[11000] bg-white p-10 flex flex-col"
                     >
                         <div className="flex justify-between items-center mb-16">
                             {settings?.logoUrl ? (
@@ -503,18 +528,30 @@ export default function Navbar() {
                             ) : (
                                 <span className="text-xl font-black tracking-tighter">{storeName.split(' ')[0]} <span className="text-[#B8860B]">{storeName.split(' ').slice(1).join(' ')}</span></span>
                             )}
-                            <button onClick={() => setIsMenuOpen(false)} className="size-12 rounded-full bg-slate-50 flex items-center justify-center">
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="size-12 rounded-full bg-slate-50 flex items-center justify-center">
                                 <X size={24} />
                             </button>
                         </div>
-                        <div className="space-y-8 overflow-y-auto pb-20">
+                        <div className="relative z-[11001] space-y-4 overflow-y-auto pb-20 no-scrollbar">
                             {navItems.map((item) => (
-                                <Link key={item.name} href={item.href} onClick={() => setIsMenuOpen(false)} className="block text-4xl font-black uppercase tracking-tighter text-slate-900 hover:text-[#B8860B] transition-colors">{item.name}</Link>
+                                <Link 
+                                    key={item.name} 
+                                    href={item.href} 
+                                    className="block py-4 text-3xl font-black uppercase tracking-tighter text-slate-900 hover:text-[#B8860B] transition-all active:scale-95 active:opacity-70 origin-left cursor-pointer pointer-events-auto"
+                                >
+                                    {item.name}
+                                </Link>
                             ))}
-                            <div className="pt-12 border-t border-slate-50 space-y-6">
-                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Univers Tria</p>
+                            <div className="pt-8 border-t border-slate-50 space-y-4">
+                                <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mb-4">Univers Tria</p>
                                 {categories.map(cat => (
-                                    <Link key={cat.id} href={`/products?categoryId=${cat.id}`} onClick={() => setIsMenuOpen(false)} className="block text-xl font-bold text-slate-600 hover:text-[#B8860B] transition-colors uppercase tracking-widest">{cat.name}</Link>
+                                    <Link 
+                                        key={cat.id} 
+                                        href={`/products?categoryId=${cat.id}`} 
+                                        className="block py-3 text-lg font-bold text-slate-600 hover:text-[#B8860B] transition-all uppercase tracking-widest active:scale-95 active:opacity-70 origin-left cursor-pointer pointer-events-auto"
+                                    >
+                                        {cat.name}
+                                    </Link>
                                 ))}
                             </div>
                         </div>

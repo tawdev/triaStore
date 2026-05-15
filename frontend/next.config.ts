@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
+    qualities: [100, 75],
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost', port: '3002', pathname: '/**' },
       { protocol: 'http', hostname: '127.0.0.1', port: '3002', pathname: '/**' },
@@ -31,6 +33,9 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'decolight.ma', pathname: '/**' },
       { protocol: 'https', hostname: '**.decolight.ma', pathname: '/**' },
     ],
+  },
+  turbopack: {
+    root: path.resolve(__dirname, ".."),
   },
 };
 

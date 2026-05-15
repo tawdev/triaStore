@@ -113,15 +113,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
 
                 {/* Sidebar Drawer */}
-                <aside className={`fixed lg:static inset-y-0 left-0 w-72 lg:w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full z-[50] transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <aside className={`fixed lg:static inset-y-0 left-0 w-72 lg:w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full z-[50] transition-transform duration-300 lg:translate-x-0 no-scrollbar ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                         <Link href="/admin" className="flex flex-col gap-0.5 group">
-                            <span className="text-xl font-black tracking-tighter text-slate-900 leading-none">
-                                TRIA <span className="text-[#B8860B]">LAMPE</span>
-                            </span>
-                            <span className="text-[7px] font-black tracking-[0.4em] text-slate-400 uppercase">
-                                Lumière & Design
-                            </span>
+                            {settings?.logoUrl ? (
+                                <img 
+                                    src={settings.logoUrl} 
+                                    alt="Logo" 
+                                    className="h-14 w-auto object-contain"
+                                />
+                            ) : (
+                                <>
+                                    <span className="text-xl font-black tracking-tighter text-slate-900 leading-none">
+                                        TRIA <span className="text-[#B8860B]">LAMPE</span>
+                                    </span>
+                                    <span className="text-[7px] font-black tracking-[0.4em] text-slate-400 uppercase">
+                                        Lumière & Design
+                                    </span>
+                                </>
+                            )}
                         </Link>
                         {/* Mobile close button */}
                         <button
@@ -132,7 +142,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </button>
                     </div>
 
-                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar py-6">
+                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar py-6 scroll-smooth">
                         {visibleNavItems.map((item) => {
                             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href + '/'));
                             const showBadge = item.stockAlert && lowStockCount > 0;

@@ -57,7 +57,7 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
                     <div className="flex justify-between items-start mb-2">
                         <div>
                             <Link href={`/products/${product.id}`}>
-                                <h3 className="text-lg font-black text-slate-900 hover:text-[#B8860B] transition-colors line-clamp-1 mb-1">
+                                <h3 className="text-lg font-black text-slate-900 hover:text-[#B8860B] transition-colors line-clamp-2 mb-1">
                                     {product.name}
                                 </h3>
                             </Link>
@@ -170,7 +170,7 @@ export default function ProductCard({ product, viewMode = 'grid' }: ProductCardP
                 <span className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em] mb-2">Tria Collection</span>
                 
                 <Link href={`/products/${product.id}`} className="w-full">
-                    <h3 className="text-[13px] font-bold text-slate-900 hover:text-[#B8860B] transition-colors line-clamp-1 mb-2 uppercase tracking-tight">
+                    <h3 className="text-[13px] font-bold text-slate-900 hover:text-[#B8860B] transition-colors line-clamp-2 mb-2 uppercase tracking-tight min-h-[32px] flex items-center justify-center">
                         {product.name}
                     </h3>
                 </Link>

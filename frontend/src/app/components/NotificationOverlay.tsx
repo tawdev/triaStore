@@ -10,7 +10,7 @@ export default function NotificationOverlay() {
     return (
         <>
             {/* Toast Container */}
-            <div className="fixed bottom-8 right-8 z-[9999] flex flex-col gap-4 max-w-md w-full sm:w-auto">
+            <div className="fixed top-4 left-4 right-4 sm:top-auto sm:left-auto sm:bottom-8 sm:right-8 z-[20000] flex flex-col gap-4 max-w-md w-auto sm:w-80">
                 {toasts.map((toast) => (
                     <div 
                         key={toast.id}
@@ -22,21 +22,21 @@ export default function NotificationOverlay() {
                         onClick={() => removeToast(toast.id)}
                     >
                         {/* Icon Badge */}
-                        <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 shadow-lg ${
+                        <div className={`h-12 w-12 rounded-full flex items-center justify-center shrink-0 shadow-lg ${
                             toast.type === 'success' ? 'bg-[#1A5319] text-white shadow-[#1A5319]/20' :
                             toast.type === 'error' ? 'bg-red-500 text-white shadow-red-500/20' :
                             'bg-slate-500 text-white shadow-slate-500/20'
                         }`}>
-                            {toast.type === 'success' && <Check size={18} strokeWidth={3} />}
-                            {toast.type === 'error' && <AlertCircle size={18} strokeWidth={3} />}
-                            {toast.type === 'info' && <Info size={18} strokeWidth={3} />}
+                            {toast.type === 'success' && <Check size={20} strokeWidth={3} />}
+                            {toast.type === 'error' && <AlertCircle size={20} strokeWidth={3} />}
+                            {toast.type === 'info' && <Info size={20} strokeWidth={3} />}
                         </div>
 
-                        <div className="flex-1 min-w-0 pr-6">
-                            <p className="text-[14px] font-black uppercase tracking-tight leading-tight mb-0.5">
+                        <div className="flex-1 min-w-0 pr-2">
+                            <p className="text-[12px] font-black uppercase tracking-[0.1em] leading-tight mb-1">
                                 {toast.type === 'success' ? 'Succès' : toast.type === 'error' ? 'Erreur' : 'Information'}
                             </p>
-                            <p className="text-[14px] font-medium opacity-60 leading-snug line-clamp-2">
+                            <p className="text-[13px] font-bold text-slate-500 leading-tight">
                                 {toast.message}
                             </p>
                         </div>

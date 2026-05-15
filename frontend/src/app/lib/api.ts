@@ -338,43 +338,53 @@ function fixImageUrls<T>(data: T): T {
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
     const token = Cookies.get('auth_token');
     
+    if (!API_BASE) {
+        console.error('API_BASE is not defined. Check your environment variables.');
+        throw new Error('API configuration error');
+    }
+
     const baseUrl = API_BASE.replace(/\/$/, '');
     const cleanPath = path.replace(/^\//, '');
     const url = `${baseUrl}/${cleanPath}`;
     
     const isFormData = options.body instanceof FormData;
     
+    const fetchOptions: RequestInit = {
+        cache: 'no-store',
+        ...options,
+        headers: {
+            ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            ...(options.headers || {}),
+        },
+    };
+
     let res: Response;
     try {
-        res = await fetch(url, {
-            cache: 'no-store',
-            ...options,
-            headers: {
-                ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-                ...(options.headers || {}),
-            },
-        });
+        res = await fetch(url, fetchOptions);
     } catch (e: any) {
-        // Simple retry for "Failed to fetch"
-        if (e.message === 'Failed to fetch') {
+        // Retry for network failures (Failed to fetch, NetworkError, etc.)
+        const isNetworkError = e instanceof TypeError || e.message?.toLowerCase().includes('fetch');
+        
+        if (isNetworkError) {
+            console.warn(`Fetch failed for ${path}, retrying in 1s...`, e.message);
             await new Promise(resolve => setTimeout(resolve, 1000));
-            res = await fetch(url, {
-                cache: 'no-store',
-                ...options,
-                headers: {
-                    ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-                    ...(options.headers || {}),
-                },
-            });
+            try {
+                res = await fetch(url, fetchOptions);
+            } catch (retryError: any) {
+                console.error(`Retry failed for ${path}:`, retryError.message);
+                throw retryError;
+            }
         } else {
             throw e;
         }
     }
+
     if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `API error ${res.status}: ${path}`);
+        const errorMessage = err.message || `API error ${res.status}: ${path}`;
+        console.error(`API Request failed: ${errorMessage}`);
+        throw new Error(errorMessage);
     }
     
     // Handle 204 No Content or empty responses

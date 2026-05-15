@@ -8,7 +8,7 @@ import {
   ChevronRight,
   Truck,
   ShieldCheck,
-  Headset,
+  MessageSquareMore,
   Star,
   Quote,
   Lamp,
@@ -118,7 +118,7 @@ export default function HomeClient({
         <div className="absolute inset-0 bg-black/40 z-0" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent z-0" />
 
-        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-12 h-full flex flex-col justify-center relative z-10 pt-20">
+        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-12 h-full flex flex-col justify-center relative z-10 pt-40 md:pt-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-16">
             <div className="text-white space-y-8">
               <div className="flex flex-col">
@@ -131,7 +131,7 @@ export default function HomeClient({
                     Collection Exclusive 2026
                 </motion.span>
                 
-                <h1 className="text-6xl md:text-[85px] leading-[1.05] mb-8 drop-shadow-2xl">
+                <h1 className="text-5xl sm:text-6xl md:text-[85px] leading-[1.05] mb-8 drop-shadow-2xl">
                     <motion.span 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -234,10 +234,10 @@ export default function HomeClient({
 
             <div className="flex items-center gap-5 group">
               <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center text-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white transition-all duration-500">
-                <Headset size={28} strokeWidth={1.5} />
+                <MessageSquareMore size={28} strokeWidth={1.5} />
               </div>
               <div>
-                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Service client</h4>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">Assistance VIP</h4>
                 <p className="text-[11px] font-bold text-slate-400">Disponible 7j/7</p>
               </div>
             </div>
@@ -298,18 +298,43 @@ export default function HomeClient({
             <Link href="/products" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2">Voir toutes les catégories <ChevronRight size={14} /></Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.slice(0, 6).map((cat, i) => (
-              <Link key={i} href={`/products?categoryId=${cat.id}`} className={`group flex flex-col items-center bg-white rounded-2xl border ${i === 0 ? 'border-[#B8860B] shadow-lg shadow-[#B8860B]/10' : 'border-slate-100'} overflow-hidden transition-all hover:shadow-xl`}>
-                <div className="relative aspect-square w-full bg-white overflow-hidden">
-                  <Image src={cat.imageUrl || "/placeholder.png"} alt={cat.name} fill quality={100} className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                </div>
-                <div className="p-6 text-center">
-                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">{cat.name}</h3>
-                    <span className="text-[10px] font-bold text-slate-400 group-hover:text-[#B8860B] transition-colors">Découvrir →</span>
-                </div>
-              </Link>
-            ))}
+          <div className="relative group/cats">
+            <div 
+              id="categories-slider"
+              className="flex overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-6 gap-6 no-scrollbar pb-8 px-2 md:px-0 scroll-smooth"
+            >
+              {categories.slice(0, 6).map((cat, i) => (
+                <Link key={i} href={`/products?categoryId=${cat.id}`} className={`group flex flex-col items-center bg-white rounded-2xl border min-w-[200px] md:min-w-0 ${i === 0 ? 'border-[#B8860B] shadow-lg shadow-[#B8860B]/10' : 'border-slate-100'} overflow-hidden transition-all hover:shadow-xl shrink-0 md:shrink`}>
+                  <div className="relative aspect-square w-full bg-white overflow-hidden">
+                    <Image src={cat.imageUrl || "/placeholder.png"} alt={cat.name} fill quality={100} className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                  </div>
+                  <div className="p-6 text-center">
+                      <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-1">{cat.name}</h3>
+                      <span className="text-[10px] font-bold text-slate-400 group-hover:text-[#B8860B] transition-colors">Découvrir →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Navigation Buttons for Categories */}
+            <button 
+              onClick={() => {
+                const el = document.getElementById('categories-slider');
+                if (el) el.scrollLeft -= 240;
+              }}
+              className="absolute left-2 md:-left-6 top-[40%] -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/cats:opacity-100"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button 
+              onClick={() => {
+                const el = document.getElementById('categories-slider');
+                if (el) el.scrollLeft += 240;
+              }}
+              className="absolute right-2 md:-right-6 top-[40%] -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/cats:opacity-100"
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
         </div>
       </motion.section>
@@ -324,22 +349,22 @@ export default function HomeClient({
       >
 
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
             <div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight">Meilleures ventes</h2>
             </div>
-            <div className="flex gap-10">
+            <div className="flex flex-wrap gap-4 md:gap-10">
               {['Populaires', 'Nouveautés', 'Promotions', 'Meilleures notes'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 ${activeTab === tab ? 'text-[#B8860B] border-[#B8860B]' : 'text-slate-300 border-transparent hover:text-slate-500'}`}
+                  className={`text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 ${activeTab === tab ? 'text-[#B8860B] border-[#B8860B]' : 'text-slate-300 border-transparent hover:text-slate-500'}`}
                 >
                   {tab}
                 </button>
               ))}
             </div>
-            <Link href="/products" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2 ml-auto">Voir toutes les lampes <ChevronRight size={14} /></Link>
+            <Link href="/products" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2 md:ml-auto">Voir toutes les lampes <ChevronRight size={14} /></Link>
           </div>
 
           <div className="relative group/slider">
@@ -374,20 +399,20 @@ export default function HomeClient({
             <button 
               onClick={() => {
                 const el = document.getElementById('featured-slider');
-                if (el) el.scrollLeft -= el.offsetWidth;
+                if (el) el.scrollLeft -= 280;
               }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/slider:opacity-100"
+              className="absolute left-2 md:-left-6 top-1/2 -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/slider:opacity-100"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={20} />
             </button>
             <button 
               onClick={() => {
                 const el = document.getElementById('featured-slider');
-                if (el) el.scrollLeft += el.offsetWidth;
+                if (el) el.scrollLeft += 280;
               }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/slider:opacity-100"
+              className="absolute right-2 md:-right-6 top-1/2 -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/slider:opacity-100"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>
@@ -438,7 +463,7 @@ export default function HomeClient({
       >
 
         <div className="mx-auto max-w-[1440px] px-6 sm:px-12">
-          <div className="flex justify-between items-end mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">Nouveautés</h2>
             <Link href="/products?sort=createdAt" className="text-[11px] font-bold text-slate-400 hover:text-[#B8860B] uppercase tracking-widest flex items-center gap-2">Voir toutes les nouveautés <ChevronRight size={14} /></Link>
           </div>
@@ -467,20 +492,20 @@ export default function HomeClient({
             <button 
               onClick={() => {
                 const el = document.getElementById('new-products-slider');
-                if (el) el.scrollLeft -= el.offsetWidth;
+                if (el) el.scrollLeft -= 280;
               }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/new:opacity-100"
+              className="absolute left-2 md:-left-6 top-1/2 -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/new:opacity-100"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={20} />
             </button>
             <button 
               onClick={() => {
                 const el = document.getElementById('new-products-slider');
-                if (el) el.scrollLeft += el.offsetWidth;
+                if (el) el.scrollLeft += 280;
               }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 opacity-0 group-hover/new:opacity-100"
+              className="absolute right-2 md:-right-6 top-1/2 -translate-y-1/2 size-10 md:size-12 bg-white/90 backdrop-blur-xl border border-slate-100 rounded-full shadow-xl flex items-center justify-center text-slate-400 hover:text-[#B8860B] hover:scale-110 transition-all z-20 md:opacity-0 md:group-hover/new:opacity-100"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>

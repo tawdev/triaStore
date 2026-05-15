@@ -20,12 +20,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       const data = await api.getSettings();
       
-      // Process logoUrl to ensure it's absolute if relative
-      if (data.logoUrl && data.logoUrl.startsWith('/')) {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
-        data.logoUrl = `${apiBase}${data.logoUrl}`;
-      }
-      
       setSettings(data);
     } catch (error) {
       console.error('Failed to fetch store settings:', error);
