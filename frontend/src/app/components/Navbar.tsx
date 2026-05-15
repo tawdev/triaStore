@@ -124,12 +124,12 @@ export default function Navbar() {
     };
 
     const navItems = [
-        { name: 'Collections', href: '/products' },
-        { name: 'Inspiration', href: '/inspiration' },
-        { name: 'La Maison', href: '/about' },
-        { name: 'Journal', href: '/blog' },
+        { name: 'Boutique', href: '/products' },
+        { name: 'Inspirations', href: '/inspiration' },
+        { name: 'À Propos', href: '/about' },
+        { name: 'Blog', href: '/blog' },
         { name: 'Contact', href: '/contact' },
-        { name: 'Suivi', href: '/track' },
+        { name: 'Suivi de commande', href: '/track' },
     ];
 
     const handleSearch = (e?: React.FormEvent) => {

@@ -104,7 +104,7 @@ export default function Footer() {
                     <div className="space-y-6">
                         <h5 className="text-[9px] font-black uppercase tracking-[0.3em] text-[#B8860B]">Découvrir</h5>
                         <ul className="space-y-4">
-                            {[{ name: 'La Collection', href: '/products' }, { name: 'Nouveautés', href: '/products?sort=newest' }, { name: 'Pièces d\'Art', href: '/products' }, { name: 'Le Journal', href: '/blog' }].map((link) => (
+                            {[{ name: 'La Boutique', href: '/products' }, { name: 'Nouveautés', href: '/products?sort=newest' }, { name: 'Pièces d\'Art', href: '/products' }, { name: 'Le Blog', href: '/blog' }].map((link) => (
                                 <li key={link.name}>
                                     <Link href={link.href} className="text-[10px] font-bold text-slate-400 hover:text-slate-900 transition-colors uppercase tracking-widest">{link.name}</Link>
                                 </li>
