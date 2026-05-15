@@ -31,6 +31,8 @@ jobs:
             cd ../frontend
             rm -rf .next
             npm install --include=optional
+            # Explicitly install native binaries to bypass npm optional dependency bugs
+            npm install --no-save @next/swc-linux-x64-gnu lightningcss-linux-x64-gnu @tailwindcss/oxide-linux-x64-gnu
             npm run build
             pm2 restart tria-frontend
             
