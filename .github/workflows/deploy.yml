@@ -18,6 +18,7 @@ jobs:
             cd /var/www/triaStore
             
             # Pull latest changes
+            git checkout frontend/package.json package-lock.json
             git pull origin main
             
             # Update Backend

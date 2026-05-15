@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+export const dynamic = 'force-dynamic';
 import { api } from '@/app/lib/api';
 import HomeClient from '@/app/HomeClient';
 

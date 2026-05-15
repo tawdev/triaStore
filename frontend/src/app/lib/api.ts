@@ -350,7 +350,8 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
     const isFormData = options.body instanceof FormData;
     
     const fetchOptions: RequestInit = {
-        cache: 'no-store',
+        // Default to 'no-store' only if no cache/revalidate options are provided
+        ...((!options.cache && !options.next?.revalidate) ? { cache: 'no-store' } : {}),
         ...options,
         headers: {
             ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
