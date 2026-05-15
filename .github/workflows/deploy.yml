@@ -29,6 +29,7 @@ jobs:
             
             # Update Frontend
             cd ../frontend
+            rm -rf .next
             npm install --include=optional
             npm run build
             pm2 restart tria-frontend
